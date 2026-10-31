@@ -754,3 +754,31 @@ from this session.
 - Three implementation/documentation commits already pushed; this fourth focused
   publication record/link commit completes work. Subsequent main pushes auto-deploy
   the browser-only Vercel build; local dev/build remains Python/FPGA mode.
+
+### 2026-10-31 — Explain public demo chart and duration
+
+- Explained supplied screenshot: generated DEMO prices are synthetic, not a real stock; chart sequence 237–476 displays last 240 of 477 processed samples. Exact elapsed wall time cannot be recovered from screenshot or sample index alone, especially if speed changes. Distinguished signal markers, long-only paper holdings, engine position and artificial-data P&L. Identified missing explicit session duration/source context in UI without claiming implementation. Advice only; no tests, source changes, commit or push.
+
+### 2026-10-31 — Dashboard UI alignment and readability review
+
+- User requested careful review/fix of wonky and offset text. Found double panel
+  heading gutters, tiny/non-wrapping typography, overly separated portfolio
+  label/value pairs, inherited heading letter spacing on badges, collapsed public
+  sidebar links without useful labels, malformed local text encoding, and compact
+  Q chart controls. Trading calculations unchanged.
+- Standardized public card gutters, form grids, control heights, text hierarchy,
+  line heights and responsive wrapping. Shared portfolio now groups label/value
+  pairs in a two-column desktop grid and one column on mobile. Split paper shares,
+  engine position, fills and fees into explicitly labeled rows. Improved chart
+  headings/legend/sample buttons, detail inspector, footer and guide wrapping.
+- Public mobile navigation stays visible when sidebar disappears; import controls
+  have keyboard-focusable file inputs. Corrected legacy N/NQ branding and mojibake,
+  removed stale Python-only SMA label, refreshed guide copy/version/dismissal key.
+- Existing 17 frontend tests passed; public and local production builds passed.
+  No tests added for reversible typography-only changes. Browser handles initially
+  failed with browser.user unavailable; reset documented CUA session and reacquired
+  public tab successfully. First combined delete/add patch was rejected without
+  writes; applied a direct file edit instead. Console encoding error during a text
+  inspection was resolved by emitting escaped JSON; source stayed UTF-8.
+- Publishing two focused UI commits and this log; desktop/mobile verification
+  against the updated production deployment follows. No broker/hardware actions.
