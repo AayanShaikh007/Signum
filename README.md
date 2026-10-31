@@ -328,42 +328,49 @@ separately; the absolute startup paths above match the current checkout.
 
 ## Public browser demo (Vercel)
 
-The static demo is a separate frontend build. It provides independent per-tab
-$10,000 virtual portfolios, generated prices, a clearly synthetic 480-sample
-replay, local historical CSV import, strategy draft autosave/import/export,
-BUY/SELL inspection, and development/validation backtests. No Python backend,
-WebSocket, Alpaca credentials, broker orders or serial device is used by this build.
+[Open Signum](https://signum-aayan14.vercel.app/). Visitors replay Apple, Nvidia
+or Microsoft daily closing prices from **2017** with their own $10,000 virtual
+portfolio. Practice prices are explicitly fictional. The stock, date range,
+market date, processed sample count and elapsed playback time are labeled.
+
+Speed presets 1×/5×/10×/20×/50× mean **samples per second**. With daily history,
+10× plays ten past trading days each second. Even 1× is compressed history;
+this is not live market data or a literal multiplier of actual market time.
+Pause/resume preserves the run; Reset clears its state and unlocks settings.
+No broker account, Alpaca credentials, Python service or UART device is used.
 
 ```powershell
 cd C:\Coding\fpga_stockmarketsimulation\frontend
 npm ci
 npm run dev:demo
-# Opens the browser-only variant at http://127.0.0.1:5174/
+# Browser-only app: http://127.0.0.1:5174/
 ```
 
-For a production static build, run `npm run build:demo`; output is `frontend/dist`.
-Vercel project root: `frontend`, install: `npm ci`, build: `npm run build:demo`,
-output: `dist`, framework: Vite. `frontend/vercel.json` enforces the demo build.
-No Vercel environment variables are required. Keep Alpaca credentials only in
-ignored local backend/.env; do not copy them into Vercel or VITE_* variables.
-The existing `npm run dev` and `npm run build` retain the local Python/FPGA app.
+Production: `npm run build:demo` produces `frontend/dist`. Vercel root is
+`frontend`, install `npm ci`, build `npm run build:demo`, output `dist`.
+No environment variables are required. Local `npm run dev` / `npm run build`
+retain the Python/FPGA app. Do not put Alpaca credentials into Vercel/VITE_*.
 
-Each run has its own in-memory portfolio; reload starts over. Strategy drafts
-(including temporarily invalid edits) autosave to this browser's local storage.
-Clearing browser data removes drafts; use Export strategy JSON for a backup.
-CSV rows and run telemetry are not uploaded or persisted automatically. Local
-storage may be unavailable; the UI warns and still offers export.
+The browser replay now uses **next-sample fills**, fees and slippage, matching
+its batch-backtest model. Chart markers/history show completed simulated fills,
+not every engine signal. Buys are cash-limited, sells cannot exceed holdings.
+Pending final signals are not filled. The optional separate-period test uses
+first 70% development / final 30% validation with fresh state per period.
+Browser numbers approximate decimal arithmetic; Python remains Decimal-based.
 
-Import plain CSV with `timestamp,price,quantity` headers; quantity is optional
-(default 20). Use ascending unique ISO timestamps with explicit timezone,
-positive prices up to $1,000,000 and integer quantities 0–65535. Limit: 2 MB,
-4–10,000 rows. A template download is provided. The app bundles no account-derived
-historical downloads. Visitors supply historical data they are entitled to use.
+Each run is in memory and independent of other visitors. Rule drafts autosave
+in this browser. Export rule JSON/results to keep backups. CSV data is not
+uploaded or automatically persisted; reimport after reload. Import plain CSV
+with `timestamp,price,quantity` (quantity optional, default 20), ordered unique
+ISO timestamps with timezone, positive prices up to $1,000,000, quantity 0–65535,
+4–10,000 rows, at most 2 MB. Use data you are entitled to use.
 
-Terminal fills use current marks; backtests use next-sample execution with fees
-and slippage, first 70% development / final 30% validation, separate fresh state.
-Backtest exports include frozen settings, costs, phase, input dataset and results.
-Browser calculations approximate decimal accounting with JavaScript numbers;
-parity fixtures compare representative decisions/ledger outputs with Python.
-Neither engine cycles nor physical RTT are invented in browser telemetry.
-Recorded hardware acceptance is labeled separately from current simulation.
+Small ⓘ buttons explain prices, playback, rules, portfolio, trades and testing.
+They work on hover, keyboard focus or tap, dismiss with Escape/outside tap,
+and render outside cards to avoid clipping.
+
+Historical samples come from Cam Nugent’s CC0 S&P 500 stock dataset, version 4:
+[provenance and regeneration](docs/public-market-data.md). They are daily closes,
+not every trade, not current quotes, and not a total-return series. No private
+Alpaca downloads are published. Real hardware requires the local installation;
+this website makes no physical latency measurements.

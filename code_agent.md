@@ -782,3 +782,33 @@ from this session.
   inspection was resolved by emitting escaped JSON; source stayed UTF-8.
 - Publishing two focused UI commits and this log; desktop/mobile verification
   against the updated production deployment follows. No broker/hardware actions.
+
+### 2026-10-31 — Beginner-focused replay redesign and section help
+
+- User expanded UI cleanup into a public-demo redesign: simpler language, clear
+  purpose, real historical prices, sped-up replay, plus short circled-i help on
+  hover. Prior cleanup was physically reviewed at desktop and 390px width with
+  zero measured overflow in inspected controls/cards; new redesign supersedes
+  its public layout while preserving shared local improvements.
+- Rebuilt public page as stock picker + date range, price chart, play/pause/reset
+  and 1/5/10/20/50x controls, progress/market date/elapsed playback, adjacent cash/
+  shares/value portfolio, plain-language rule editor, completed-trade history,
+  optional separate-period tests, and concise explanation/local FPGA links.
+- Bundled AAPL/NVDA/MSFT 2017 daily closes, 251 each. Verified publisher metadata
+  reports CC0 and version 4; pinned download, checksum, regeneration script and
+  provenance documentation committed. No Alpaca data/account credentials used.
+  Fictional practice replay remains distinct. Speed explicitly means samples/sec:
+  daily data plays trading days per second, not literal live-market acceleration.
+- Replay now uses next-sample fills with fees/slippage, matching batch tests.
+  Markers/history reflect completed fills, not unfilled engine requests. Pause/
+  resume keeps state; reset unlocks settings. Added run guards and warmup message.
+- Added reusable fixed-position portaled info tooltips across sections, hover,
+  focus, tap, Escape/outside dismissal and viewport clamping. Updated public guide
+  and dismissal version. Retained local storage and JSON/CSV workflows.
+- 20 frontend tests passed, including dated data/order/period checks and equivalence
+  of next-sample replay with batch backtest. Both public and local builds passed.
+  A nullable chart coordinate TypeScript failure was corrected. Large shell file
+  write was rejected by policy before execution; used purpose-built apply_patch
+  for safe direct edits instead. No hardware/broker actions; no RTL changes.
+- Publishing focused data, engine/tests, public UI, and documentation/log commits.
+  Production desktop/mobile/tooltip/playback verification follows deployment.
