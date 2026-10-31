@@ -8,8 +8,8 @@
     <File path="rtl/uart_rx.v" type="file.verilog" enable="1"/>
     <File path="rtl/uart_tx.v" type="file.verilog" enable="1"/>
     <File path="rtl/packet_rx.v" type="file.verilog" enable="1"/>
-    <File path="rtl/nanoquant_core.v" type="file.verilog" enable="1"/>
-    <File path="rtl/nanoquant_top.v" type="file.verilog" enable="1"/>
+    <File path="rtl/signum_core.v" type="file.verilog" enable="1"/>
+    <File path="rtl/signum_top.v" type="file.verilog" enable="1"/>
     <File path="constraints/tang_nano9k.cst" type="file.cst" enable="1"/>
     <File path="constraints/tang_nano9k.sdc" type="file.sdc" enable="1"/>
   </FileList>

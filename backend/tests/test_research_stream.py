@@ -10,8 +10,8 @@ from backend.market import MarketSample
 from backend.provider import MarketDataError
 from backend.service import Controller, StartConfig
 from backend.tests.test_transport import FakeSerial
-from nanoquant.transport import CommunicationError, SerialSession
-from nanoquant.model import Quote
+from signum.transport import CommunicationError, SerialSession
+from signum.model import Quote
 
 
 def test_replay_completes_with_paper_and_provenance():
@@ -40,7 +40,7 @@ def test_replay_completes_with_paper_and_provenance():
 def test_actual_wire_mapping_for_replay_via_fake_hardware():
     fake=FakeSerial()
     async def scenario():
-        with patch('nanoquant.transport.time.sleep'):
+        with patch('signum.transport.time.sleep'):
             controller=Controller(session_factory=lambda port:SerialSession(port,serial_factory=lambda *a,**k:fake))
             await controller.start('owner',StartConfig(mode='fpga',port='fake',reset_confirmed=True,source='replay',speed=20))
             await asyncio.wait_for(controller.task,4)
@@ -80,7 +80,7 @@ def test_live_source_failure_closes_uart_and_releases_ownership():
         raise MarketDataError('Test market stream failure')
         yield
     async def scenario():
-        with patch('backend.service.credentials',return_value=('a','b')), patch('backend.service.live_samples',broken), patch('nanoquant.transport.time.sleep'):
+        with patch('backend.service.credentials',return_value=('a','b')), patch('backend.service.live_samples',broken), patch('signum.transport.time.sleep'):
             controller=Controller(session_factory=lambda port:SerialSession(port,serial_factory=lambda *a,**k:fake))
             await controller.start('owner',StartConfig(source='live',mode='fpga',port='fake',reset_confirmed=True))
             await asyncio.wait_for(controller.task,1)
@@ -106,7 +106,7 @@ def test_missing_credentials_are_command_error_not_generated_fallback():
 @pytest.mark.parametrize('failure,counter',[('crc','crc_errors'),('timeout','timeouts'),('sequence','sequence_errors'),('order','reference_errors')])
 def test_uart_error_counters(failure,counter):
     fake=FakeSerial(corrupt=failure)
-    with patch('nanoquant.transport.time.sleep'):
+    with patch('signum.transport.time.sleep'):
         session=SerialSession('fake',serial_factory=lambda *a,**k:fake)
         with pytest.raises(CommunicationError): session.transact(Quote(0,9990,20))
         assert session.metrics[counter]==1

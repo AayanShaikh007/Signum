@@ -5,9 +5,9 @@ from unittest.mock import patch
 import pytest
 
 from backend.service import Controller, StartConfig
-from nanoquant.model import Engine, Quote
-from nanoquant.protocol import RESPONSE_BODY, crc16, decode
-from nanoquant.transport import CommunicationError, Reply, SerialSession
+from signum.model import Engine, Quote
+from signum.protocol import RESPONSE_BODY, crc16, decode
+from signum.transport import CommunicationError, Reply, SerialSession
 
 
 class FakeSerial:
@@ -47,7 +47,7 @@ class FakeSerial:
 
 def test_partial_packets_and_intertransaction_pause():
     fake = FakeSerial(chunk=3)
-    with patch('nanoquant.transport.time.sleep') as sleep:
+    with patch('signum.transport.time.sleep') as sleep:
         session = SerialSession('COM_TEST', serial_factory=lambda *a, **k: fake)
         reply = session.transact(Quote(0, 9990, 30))
         assert (reply.order, reply.position, reply.engine_cycles) == (20, 20, 1)
@@ -60,7 +60,7 @@ def test_partial_packets_and_intertransaction_pause():
 @pytest.mark.parametrize('failure', ['crc', 'timeout', 'sequence', 'order'])
 def test_bad_response_never_retries(failure):
     fake = FakeSerial(corrupt=failure)
-    with patch('nanoquant.transport.time.sleep'):
+    with patch('signum.transport.time.sleep'):
         session = SerialSession('COM_TEST', serial_factory=lambda *a, **k: fake)
         with pytest.raises(CommunicationError):
             session.transact(Quote(0, 9990, 20))
@@ -84,7 +84,7 @@ def test_live_reset_confirmation_required():
 def test_mock_live_stream_kill_and_close():
     fake = FakeSerial()
     async def scenario():
-        with patch('nanoquant.transport.time.sleep'):
+        with patch('signum.transport.time.sleep'):
             controller = Controller(session_factory=lambda port: SerialSession(port, serial_factory=lambda *a, **k: fake))
             queue = controller.subscribe('owner')
             await controller.start('owner', StartConfig(mode='fpga', port='COM_TEST', reset_confirmed=True, speed=20))
@@ -166,7 +166,7 @@ def test_port_busy_and_physical_disconnect_surface_errors():
         assert controller.reset_required
     asyncio.run(busy())
     fake = FakeSerial()
-    with patch('nanoquant.transport.time.sleep'):
+    with patch('signum.transport.time.sleep'):
         session = SerialSession('test', serial_factory=lambda *a, **k: fake)
         with patch.object(fake, 'read', side_effect=OSError('USB disconnected')):
             with pytest.raises(CommunicationError, match='USB disconnected'):
@@ -178,7 +178,7 @@ def test_port_busy_and_physical_disconnect_surface_errors():
 def test_owner_disconnect_closes_live_port():
     fake = FakeSerial()
     async def scenario():
-        with patch('nanoquant.transport.time.sleep'):
+        with patch('signum.transport.time.sleep'):
             controller = Controller(session_factory=lambda port: SerialSession(port, serial_factory=lambda *a, **k: fake))
             queue = controller.subscribe('owner')
             await controller.start('owner', StartConfig(mode='fpga', port='test', reset_confirmed=True))
@@ -194,7 +194,7 @@ def test_owner_disconnect_closes_live_port():
 def test_pending_kill_is_not_discarded_by_stop():
     fake = FakeSerial()
     async def scenario():
-        with patch('nanoquant.transport.time.sleep'):
+        with patch('signum.transport.time.sleep'):
             controller = Controller(session_factory=lambda port: SerialSession(port, serial_factory=lambda *a, **k: fake))
             controller.subscribe('owner')
             await controller.start('owner', StartConfig(mode='fpga', port='test', reset_confirmed=True))

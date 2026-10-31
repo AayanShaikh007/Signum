@@ -11,7 +11,7 @@ from typing import Literal
 from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field
-from nanoquant.model import Engine
+from signum.model import Engine
 
 
 class Strategy(BaseModel):

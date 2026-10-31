@@ -8,9 +8,9 @@ from decimal import Decimal
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Literal
 
-from nanoquant.feed import generate
-from nanoquant.model import Engine
-from nanoquant.transport import SerialSession
+from signum.feed import generate
+from signum.model import Engine
+from signum.transport import SerialSession
 from .telemetry import telemetry
 from .market import MarketSample, Normalizer
 from .paper import PaperPortfolio

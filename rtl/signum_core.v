@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 // Stop-and-wait transport: one quote, one response. No quote queue.
-module nanoquant_core #(parameter CLKS_PER_BIT=234, TIMEOUT_CLKS=270000)(
+module signum_core #(parameter CLKS_PER_BIT=234, TIMEOUT_CLKS=270000)(
     input wire clk, rst, uart_rx_pin,
     output wire uart_tx_pin,
     output reg error_latched,

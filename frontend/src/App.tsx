@@ -66,12 +66,12 @@ export default function App() {
   function exportData() {
     const blob = new Blob([JSON.stringify(rows, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement('a'); a.href = url; a.download = `nanoquant-${latest?.run_id ?? 'session'}.json`; a.click(); URL.revokeObjectURL(url)
+    const a = document.createElement('a'); a.href = url; a.download = `signum-${latest?.run_id ?? 'session'}.json`; a.click(); URL.revokeObjectURL(url)
   }
   return <div className="app-shell">
     <Onboarding open={guideOpen} onDismiss={dismissGuide}/>
     <aside className="sidebar">
-      <a href="#overview" className="brand"><span className="brand-mark">N</span><span>NanoQuant<span className="brand-tag">TRADING SYSTEMS</span></span></a>
+      <a href="#overview" className="brand"><span className="brand-mark">S</span><span>Signum<span className="brand-tag">TRADING SYSTEMS</span></span></a>
       <div className="workspace-label">WORKSPACE <span>01</span></div>
       <a className="nav-item active" href="#overview"><LayoutDashboard size={17}/> Overview <span className="nav-key">âŒ˜ 1</span></a>
       <a className="nav-item" href="#strategies"><FlaskConical size={17}/> Strategies</a>
@@ -107,7 +107,7 @@ export default function App() {
         <div className="research-grid"><PaperPanel latest={latest} accountMode={execution === 'alpaca_paper'} broker={running ? latest?.broker ?? status.broker : status.broker}/><PerformancePanel latest={latest} metrics={running ? latest?.performance ?? status.performance : status.performance}/></div>
         <section className="panel history-panel" id="decisions"><div className="panel-heading"><div className="flex items-center gap-3"><h2>Decision feed</h2><span className="pill subtle">{rows.length} captured</span></div><div className="segmented">{['ALL','BUY','SELL','HOLD'].map(value => <button key={value} className={filter === value ? 'selected' : ''} onClick={() => setFilter(value)}>{value === 'ALL' ? 'All decisions' : value}</button>)}</div></div><div className="table-scroll"><table><thead><tr><th>Sequence</th><th>Time</th><th>Market price</th><th>Decision</th><th>Order / requested</th><th>Position</th><th>Host round trip</th><th>Validation</th></tr></thead><tbody>{visibleRows.map(row => <tr key={`${row.run_id}-${row.sequence}`}><td className="mono muted">#{String(row.sequence).padStart(4,'0')}</td><td className="muted">{new Date(row.timestamp).toLocaleTimeString('en-US', { hour12: false })}</td><td className="mono">{row.price_usd != null ? `$${row.price_usd.toFixed(2)}` : '?'} <span className="muted tiny">({row.price} ticks)</span></td><td><span className={`signal ${row.decision.toLowerCase()}`}>{row.order > 0 ? <ArrowUpRight size={12}/> : row.order < 0 ? <ArrowDownLeft size={12}/> : null}{row.decision}</span></td><td className="mono">{signed(row.order)} <span className="muted">/ {row.quantity}</span></td><td className="mono">{signed(row.position)}</td><td className="mono muted">{row.host_round_trip_us === null ? 'â€”' : `${(row.host_round_trip_us/1000).toFixed(2)} ms`}</td><td><span className="validation"><Check size={12}/>{row.validation_status === 'matched' ? 'Matched' : 'Reference'}</span></td></tr>)}</tbody></table>{!visibleRows.length && <div className="empty-table"><Terminal size={20}/><span>{rows.length ? 'No decisions match this filter.' : 'Decision history will appear when your run starts.'}</span></div>}</div><div className="history-footer"><span><span className="mini-dot"/> {currentMode === 'fpga' ? 'Physical responses verified against Python' : 'Simulation Â· Python reference decisions'}</span><span>{buyCount} buys <span className="muted">/</span> {sellCount} sells <span className="muted">Â·</span> last 240 quotes retained</span></div></section>
         <StrategyWorkspace activeSnapshot={strategySnapshot} running={running} onUse={(id,name,supported)=>{setStrategySnapshot(id);setStrategyName(name);setStrategyFpga(supported);setReset(false);setPaperConfirmed(false);if(!supported)setMode('simulation')}}/>
-        <footer className="page-footer"><span><ShieldCheck size={13}/> Research terminal Â· all orders and fills are simulated</span><span>NANOQUANT <span className="muted">/</span> ENGINEERED FOR CLARITY</span></footer>
+        <footer className="page-footer"><span><ShieldCheck size={13}/> Research terminal Â· all orders and fills are simulated</span><span>SIGNUM <span className="muted">/</span> ENGINEERED FOR CLARITY</span></footer>
       </main>
     </div>
   </div>

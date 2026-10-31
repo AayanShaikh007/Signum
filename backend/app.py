@@ -26,7 +26,7 @@ def create_app():
         if controller.owner:
             await controller.stop(controller.owner)
 
-    app = FastAPI(title='NanoQuant local telemetry', lifespan=lifespan)
+    app = FastAPI(title='Signum local telemetry', lifespan=lifespan)
     app.state.controller = controller
     app.include_router(research_router())
 

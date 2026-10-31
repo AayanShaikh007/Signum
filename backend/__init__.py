@@ -1,1 +1,1 @@
-"""Local NanoQuant telemetry service."""
+"""Local Signum telemetry service."""

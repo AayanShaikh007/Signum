@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-module nanoquant_top(
+module signum_top(
     input wire clk, rst_n, uart_rx,
     output wire uart_tx,
     output wire [5:0] led
@@ -15,7 +15,7 @@ module nanoquant_top(
     wire error_latched, killed;
     wire action_valid;
     wire signed [31:0] action_order;
-    nanoquant_core core(clk,rst,uart_rx,uart_tx,error_latched,killed,
+    signum_core core(clk,rst,uart_rx,uart_tx,error_latched,killed,
                         action_valid,action_order);
     action_leds indicators(clk,rst,action_valid,action_order,killed,error_latched,led);
 endmodule

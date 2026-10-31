@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from decimal import Decimal, ROUND_HALF_UP
 
-from nanoquant.model import Quote
+from signum.model import Quote
 
 SYMBOLS = ('AAPL', 'NVDA', 'TSLA')
 

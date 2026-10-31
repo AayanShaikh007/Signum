@@ -4,7 +4,7 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCES = ['engine', 'uart_rx', 'uart_tx', 'packet_rx', 'nanoquant_core', 'nanoquant_top']
+SOURCES = ['engine', 'uart_rx', 'uart_tx', 'packet_rx', 'signum_core', 'signum_top']
 
 
 def main():
@@ -15,16 +15,16 @@ def main():
     commands = [
         ['yosys', '-Q', '-T', '-l', 'build/synthesis.log', '-p',
          'read_verilog ' + ' '.join(f'rtl/{name}.v' for name in SOURCES)
-         + '; synth_gowin -top nanoquant_top -json build/nanoquant.json; check'],
+         + '; synth_gowin -top signum_top -json build/signum.json; check'],
         ['nextpnr-himbaechel', '--device', 'GW1NR-LV9QN88PC6/I5',
-         '--json', 'build/nanoquant.json', '--write', 'build/nanoquant_pnr.json',
+         '--json', 'build/signum.json', '--write', 'build/signum_pnr.json',
          '--freq', '27', '-o', 'cst=constraints/tang_nano9k.cst', '-o', 'family=GW1N-9C',
          '--report', 'build/timing.json', '--log', 'build/route.log'],
-        ['gowin_pack', '-d', 'GW1N-9C', '-o', 'build/nanoquant.fs', 'build/nanoquant_pnr.json'],
+        ['gowin_pack', '-d', 'GW1N-9C', '-o', 'build/signum.fs', 'build/signum_pnr.json'],
     ]
     for command in commands:
         subprocess.run(command, cwd=ROOT, check=True, timeout=300)
-    print('Built build/nanoquant.fs. No hardware was programmed.')
+    print('Built build/signum.fs. No hardware was programmed.')
 
 
 if __name__ == '__main__':

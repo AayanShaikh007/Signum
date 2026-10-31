@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from nanoquant.model import Quote
+from signum.model import Quote
 from backend.strategies import BUILTIN, Conflict, Strategy, StrategyEngine, StrategyStore, fpga_supported
 from backend.research import BacktestRequest, backtest
 from backend.research_api import research_router

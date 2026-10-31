@@ -9,4 +9,4 @@ if (-not (Test-Path "$projectRoot\.venv\Scripts\python.exe")) {
     throw 'Create the project environment first: python -m venv .venv'
 }
 $env:PATH = "$projectRoot\.venv\Scripts;$SuitePath\bin;$SuitePath\lib;$env:PATH"
-Write-Host 'NanoQuant Python and FPGA tools are ready in this terminal.'
+Write-Host 'Signum Python and FPGA tools are ready in this terminal.'

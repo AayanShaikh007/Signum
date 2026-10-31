@@ -13,7 +13,7 @@ class LedTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             output = str(Path(directory) / 'leds.vvp')
             subprocess.run(['iverilog', '-g2012', '-Wall', '-s', 'tb_action_leds',
-                            '-o', output, str(ROOT / 'rtl/nanoquant_top.v'),
+                            '-o', output, str(ROOT / 'rtl/signum_top.v'),
                             str(ROOT / 'tests/tb_action_leds.v')], check=True, timeout=30)
             result = subprocess.run(['vvp', output], check=True, capture_output=True,
                                     text=True, timeout=30)

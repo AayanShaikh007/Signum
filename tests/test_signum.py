@@ -4,9 +4,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from nanoquant.feed import generate
-from nanoquant.model import Engine, Quote
-from nanoquant.protocol import crc16, decode, encode
+from signum.feed import generate
+from signum.model import Engine, Quote
+from signum.protocol import crc16, decode, encode
 
 ROOT = Path(__file__).resolve().parents[1]
 

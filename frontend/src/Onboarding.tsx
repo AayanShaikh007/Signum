@@ -22,7 +22,7 @@ export default function Onboarding({ open, onDismiss }: { open: boolean; onDismi
   }, [open])
   return <dialog ref={dialog} className="onboarding" aria-labelledby="guide-title" aria-describedby="guide-description" onCancel={event => { event.preventDefault(); onDismiss() }}>
     <button className="guide-close icon-button" aria-label="Close introduction" onClick={onDismiss}><X size={18}/></button>
-    <div className="guide-top"><span className="guide-symbol"><Sparkles size={22}/></span><span>NANOQUANT <span>/ QUICK START</span></span></div>
+    <div className="guide-top"><span className="guide-symbol"><Sparkles size={22}/></span><span>SIGNUM <span>/ QUICK START</span></span></div>
     <div className="guide-step" key={step}>
       <div className="guide-visual" aria-hidden="true"><span className="guide-orbit"/>{content.visual.map((label,index) => <div key={label} className={`guide-node node-${index}`}><span>{index === 2 ? <Check size={15}/> : index+1}</span><small>{label}</small></div>)}</div>
       <div className="guide-eyebrow">{content.tag}</div><h2 id="guide-title">{content.title}</h2><p id="guide-description">{content.body}</p><div className="guide-tip">{content.tip}</div>

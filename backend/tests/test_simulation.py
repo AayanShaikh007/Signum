@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from backend.app import create_app
 from backend.service import Controller, StartConfig
 from backend.telemetry import telemetry
-from nanoquant.model import Quote
+from signum.model import Quote
 
 
 def receive_type(ws, kind):

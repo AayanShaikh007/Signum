@@ -5,11 +5,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from nanoquant.model import Engine, Quote
-from nanoquant.protocol import crc16, decode_response, encode, RESPONSE_BODY
+from signum.model import Engine, Quote
+from signum.protocol import crc16, decode_response, encode, RESPONSE_BODY
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCES = ['engine.v', 'uart_rx.v', 'uart_tx.v', 'packet_rx.v', 'nanoquant_core.v']
+SOURCES = ['engine.v', 'uart_rx.v', 'uart_tx.v', 'packet_rx.v', 'signum_core.v']
 
 
 class ResponseTests(unittest.TestCase):
