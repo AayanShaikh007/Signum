@@ -698,3 +698,35 @@ from this session.
 - No runs started, orders sent or hardware reset performed. No new tests needed
   for instructions; browser QA not performed. Prior board remains kill-latched;
   instruct S2 before hardware exercise. Recording and publishing documentation.
+
+### 2026-10-31 — Independent public browser demo for Vercel
+
+- User selected independent virtual portfolios without Alpaca accounts and
+  authorized implementation/deployment. Added separate demo build entry; local
+  Python/FPGA frontend remains default dev/build. No backend/RTL changes.
+- Public demo runs strategy engine, $10,000 long-only ledger, generated prices,
+  synthetic 480-sample replay, historical CSV import, charts/markers, capped
+  decisions, stop/kill, run export and 70/30 next-sample backtests in browser.
+- Browser-local draft autosave preserves incomplete edits; validated strategy
+  import/export and frozen result export include settings/costs/phase/dataset.
+  Portfolios are per-tab/run; no shared funds, accounts, broker or UART access.
+  CSV files remain local and require reimport after reload. Bundled replay is
+  clearly synthetic; no private/account-derived history was published.
+- Reused chart/portfolio styling and added responsive public layout, browser
+  provenance, hardware results explicitly recorded rather than live, source/setup
+  links, public introduction steps, static Vercel config and usage documentation.
+- Verification: 17 frontend tests passed, including Python-generated decision/
+  ledger parity fixtures, SMA warmup, run isolation, kill, long-only/cash clipping,
+  ordered/timezoned CSV, costs/next-sample fills, reproducibility, validation split,
+  JSON validation and blocked/corrupt storage. Found and fixed signed-zero and
+  half-cent floating rounding differences; browser accounting remains approximate.
+  Both local and public production builds passed. Static demo bundle check found
+  no local App chunk, backend API paths, WebSocket creation or broker API host.
+- Vercel required team access; user approved native consent link. Project creation
+  returned schema mismatch/unknown outcome; verified via project listing instead
+  of repeating the write. Project exists as signum linked to GitHub Signum; set
+  frontend root, npm ci, build:demo, dist, and public access. No credentials copied.
+- Publishing focused engine/tests and UI/build commits plus documentation/log.
+  Deployment status and public HTTP verification will be recorded after Vercel
+  finishes. Localhost browser access restrictions were not bypassed; no local
+  browser visual QA performed. No FPGA commands or Alpaca orders sent.

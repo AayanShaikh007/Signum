@@ -322,3 +322,45 @@ Existing backend data, Alpaca settings, and browser recovery drafts are retained
 Historical validation records keep the names of artifacts originally tested.
 The local folder and GitHub remote keep their current names until renamed
 separately; the absolute startup paths above match the current checkout.
+
+## Public browser demo (Vercel)
+
+The static demo is a separate frontend build. It provides independent per-tab
+$10,000 virtual portfolios, generated prices, a clearly synthetic 480-sample
+replay, local historical CSV import, strategy draft autosave/import/export,
+BUY/SELL inspection, and development/validation backtests. No Python backend,
+WebSocket, Alpaca credentials, broker orders or serial device is used by this build.
+
+```powershell
+cd C:\Coding\fpga_stockmarketsimulation\frontend
+npm ci
+npm run dev:demo
+# Opens the browser-only variant at http://127.0.0.1:5174/
+```
+
+For a production static build, run `npm run build:demo`; output is `frontend/dist`.
+Vercel project root: `frontend`, install: `npm ci`, build: `npm run build:demo`,
+output: `dist`, framework: Vite. `frontend/vercel.json` enforces the demo build.
+No Vercel environment variables are required. Keep Alpaca credentials only in
+ignored local backend/.env; do not copy them into Vercel or VITE_* variables.
+The existing `npm run dev` and `npm run build` retain the local Python/FPGA app.
+
+Each run has its own in-memory portfolio; reload starts over. Strategy drafts
+(including temporarily invalid edits) autosave to this browser's local storage.
+Clearing browser data removes drafts; use Export strategy JSON for a backup.
+CSV rows and run telemetry are not uploaded or persisted automatically. Local
+storage may be unavailable; the UI warns and still offers export.
+
+Import plain CSV with `timestamp,price,quantity` headers; quantity is optional
+(default 20). Use ascending unique ISO timestamps with explicit timezone,
+positive prices up to $1,000,000 and integer quantities 0–65535. Limit: 2 MB,
+4–10,000 rows. A template download is provided. The app bundles no account-derived
+historical downloads. Visitors supply historical data they are entitled to use.
+
+Terminal fills use current marks; backtests use next-sample execution with fees
+and slippage, first 70% development / final 30% validation, separate fresh state.
+Backtest exports include frozen settings, costs, phase, input dataset and results.
+Browser calculations approximate decimal accounting with JavaScript numbers;
+parity fixtures compare representative decisions/ledger outputs with Python.
+Neither engine cycles nor physical RTT are invented in browser telemetry.
+Recorded hardware acceptance is labeled separately from current simulation.
