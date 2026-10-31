@@ -5,13 +5,13 @@ module packet_rx #(parameter TIMEOUT_CLKS=270000)(
     input wire [7:0] byte_data,
     output reg quote_valid, output reg packet_error,
     output reg [31:0] quote_sequence, price,
-    output reg [15:0] quantity, output reg kill
+    output reg [15:0] quantity, output reg kill, output reg config_command
 );
     reg [4:0] index;
     reg [31:0] idle_count;
     reg [15:0] crc;
     reg [7:0] crc_low;
-    reg header_ok;
+    reg header_ok, config_version;
     function [15:0] crc_byte;
         input [15:0] previous;
         input [7:0] value;
@@ -28,7 +28,7 @@ module packet_rx #(parameter TIMEOUT_CLKS=270000)(
         quote_valid<=0; packet_error<=0;
         if (rst) begin
             index<=0; idle_count<=0; crc<=16'hffff; crc_low<=0;
-            header_ok<=0; quote_sequence<=0; price<=0; quantity<=0; kill<=0;
+            header_ok<=0; config_version<=0; quote_sequence<=0; price<=0; quantity<=0; kill<=0; config_command<=0;
         end else if (abort_frame || (index!=0 && idle_count==TIMEOUT_CLKS-1 && !byte_valid)) begin
             index<=0; idle_count<=0; packet_error<=1;
         end else if (byte_valid) begin
@@ -46,8 +46,8 @@ module packet_rx #(parameter TIMEOUT_CLKS=270000)(
                     index<=index+5'd1;
                     if (index<14) crc<=crc_byte(crc,byte_data);
                     case (index)
-                        2: if (byte_data!=1) header_ok<=0;
-                        3: begin kill<=byte_data[0]; if (byte_data[7:1]!=0) header_ok<=0; end
+                        2: begin config_version<=byte_data==2; if (byte_data!=1 && byte_data!=2) header_ok<=0; end
+                        3: begin kill<=byte_data[0]; config_command<=config_version && byte_data==2; if ((config_version && byte_data!=2) || (!config_version && byte_data>1)) header_ok<=0; end
                         4,5,6,7: quote_sequence[(index-4)*8 +: 8]<=byte_data;
                         8,9,10,11: price[(index-8)*8 +: 8]<=byte_data;
                         12: quantity[7:0]<=byte_data;

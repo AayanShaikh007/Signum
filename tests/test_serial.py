@@ -5,6 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from signum.configuration import HardwareSettings
 from signum.model import Engine, Quote
 from signum.protocol import crc16, decode_response, encode, RESPONSE_BODY
 
@@ -42,10 +43,69 @@ class SerialTests(unittest.TestCase):
         raw = bytes(int(line.split()[1], 16) for line in result.stdout.splitlines()
                     if line.startswith('BYTE '))
         self.assertEqual(len(raw) % 20, 0, result.stdout)
-        replies = [decode_response(raw[i:i+20]) for i in range(0, len(raw), 20)]
+        replies=[]
+        for i in range(0,len(raw),20):
+            packet=raw[i:i+20]
+            if packet[2]==2:
+                from signum.protocol import RESPONSE_BODY,crc16
+                self.assertEqual(crc16(packet[:-2]),int.from_bytes(packet[-2:],'little'))
+                magic,version,flags,seq,settings,maximum,cycles=RESPONSE_BODY.unpack(packet[:-2])
+                self.assertEqual((magic,version,cycles),(b'NR',2,0))
+                replies.append((seq,settings & 0xffffffff,maximum,flags==6,0))
+            else: replies.append(decode_response(packet))
         engine = [tuple(map(int, line.split()[1:])) for line in result.stdout.splitlines()
                   if line.startswith('ENGINE ')]
         return replies, engine, result.stdout
+
+    def test_configured_anchor_and_sma_match_python(self):
+        import random
+        from collections import deque
+        rng=random.Random(42)
+        commands=[];expected=[];engine_expected=[]
+        for index,window in enumerate([None,2,4,8,16,32,64]):
+            commands.append((2,0))
+            settings=HardwareSettings(kind='anchor' if window is None else 'sma_reversion',
+                threshold_ticks=7,max_order=3,position_limit=8,window=window or 20)
+            commands.extend((0,b) for b in settings.encode(500+index))
+            commands.append((1,16*230))
+            expected.append((500+index,settings.packed(),3,False,0))
+            model=Engine(threshold=7,max_order=3,limit=8)
+            history=deque(maxlen=window or 2)
+            for seq in range((window or 0)+100):
+                q=Quote(seq,rng.choice([0,9990,10000,10010,0xffffffff]),rng.choice([0,1,10,65535]),seq==(window or 0)+90)
+                if window and len(history)<window and not q.kill and not model.killed:
+                    result=(0,model.position,0)
+                else:
+                    if window and history: model.fair=sum(history)//len(history)
+                    result=model.step(q)
+                history.append(q.price)
+                expected.append((seq,result[0],result[1],bool(result[2]),1))
+                engine_expected.append(result)
+                commands.extend((0,b) for b in encode(q));commands.append((1,16*230))
+        replies,engine,_=self.simulate(commands)
+        self.assertEqual(replies,expected)
+        self.assertEqual(engine,engine_expected)
+
+    def test_configuration_is_atomic_locked_and_cannot_clear_kill(self):
+        from signum.protocol import BODY,crc16
+        def frame(settings):
+            body=BODY.pack(b'NQ',2,2,50,settings,3)
+            return body+crc16(body).to_bytes(2,'little')
+        good=HardwareSettings(threshold_ticks=9,max_order=3,position_limit=8)
+        commands=[]
+        packets=[frame(0),good.encode(51),HardwareSettings(threshold_ticks=1).encode(52),
+                 encode(Quote(1,9992,10)),encode(Quote(2,9990,10,True)),good.encode(53),
+                 encode(Quote(3,0,10))]
+        for packet in packets:
+            commands.extend((0,b) for b in packet);commands.append((1,16*230))
+        replies,engine,_=self.simulate(commands)
+        self.assertTrue(replies[0][3]) # invalid config rejected without changing defaults
+        self.assertEqual(replies[1],(51,good.packed(),3,False,0))
+        self.assertTrue(replies[2][3]) # second config cannot replace settings
+        self.assertEqual(replies[3][1:4],(0,0,False)) # threshold remains 9
+        self.assertTrue(replies[5][3]) # kill cannot be cleared by config
+        self.assertEqual(replies[-1][1:4],(0,0,True))
+        self.assertEqual(engine,[(0,0,0),(0,0,1),(0,0,1)])
 
     def test_serial_risk_and_kill(self):
         quotes = [Quote(i, 9995, 65535) for i in range(7)]

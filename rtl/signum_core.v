@@ -12,7 +12,14 @@ module signum_core #(parameter CLKS_PER_BIT=234, TIMEOUT_CLKS=270000)(
     wire rx_valid, framing_error, quote_valid, packet_error;
     wire [31:0] quote_sequence, price;
     wire [15:0] quantity;
-    wire kill;
+    wire kill, config_command;
+    reg started, configured, config_reply, config_rejected;
+    reg [31:0] settings;
+    reg [15:0] max_order;
+    wire config_ok = !started && !configured && !killed &&
+        price[15:0]>=1 && price[15:0]<=500 &&
+        price[27:16]>=1 && price[27:16]<=100 && quantity>=1 && quantity<=20 &&
+        ((!price[31] && price[30:28]==0) || (price[31] && price[30:28]>=1 && price[30:28]<=6));
     reg active;
     wire result_valid;
     wire signed [31:0] order, position;
@@ -23,8 +30,9 @@ module signum_core #(parameter CLKS_PER_BIT=234, TIMEOUT_CLKS=270000)(
         clk,rst,uart_rx_pin,rx_data,rx_valid,framing_error);
     packet_rx #(.TIMEOUT_CLKS(TIMEOUT_CLKS)) parser(
         clk,rst,rx_valid,framing_error,rx_data,quote_valid,packet_error,
-        quote_sequence,price,quantity,kill);
-    engine trading(clk,rst,quote_valid && !active,price,quantity,kill,
+        quote_sequence,price,quantity,kill,config_command);
+    configured_engine trading(clk,rst,quote_valid && !active && !config_command,price,quantity,kill,
+                   settings,max_order,
                    result_valid,order,position,killed);
     reg [159:0] response;
     reg [4:0] tx_index;
@@ -47,19 +55,30 @@ module signum_core #(parameter CLKS_PER_BIT=234, TIMEOUT_CLKS=270000)(
             response_crc=c;
         end
     endfunction
-    wire [143:0] response_body={16'd1,position,order,accepted_sequence,
-                               7'b0,killed,8'd1,16'h524e};
+    wire [143:0] response_body=config_reply ?
+        {16'd0,16'b0,max_order,settings,accepted_sequence,
+         5'b0,config_rejected,2'b10,8'd2,16'h524e} :
+        {16'd1,position,order,accepted_sequence,7'b0,killed,8'd1,16'h524e};
     always @(posedge clk) begin
         tx_start<=0;
         if (rst) begin
             active<=0; error_latched<=0; accepted_sequence<=0;
+            started<=0;configured<=0;config_reply<=0;config_rejected<=0;
+            settings<=32'h00640005;max_order<=20;
             response<=0; tx_index<=0; send_state<=0; tx_start<=0; tx_data<=0;
         end else begin
             if (framing_error || packet_error || (quote_valid && active)) error_latched<=1;
-            if (quote_valid && !active) begin active<=1; accepted_sequence<=quote_sequence; end
-            if (result_valid) begin
+            if (quote_valid && !active) begin
+                active<=1; accepted_sequence<=quote_sequence;
+                if(config_command) begin
+                    config_reply<=1;config_rejected<=!config_ok;
+                    if(config_ok) begin settings<=price;max_order<=quantity;configured<=1;end
+                    else error_latched<=1;
+                end else started<=1;
+            end
+            if (result_valid || config_reply) begin
                 response<={response_crc(response_body),response_body};
-                tx_index<=0; send_state<=1;
+                tx_index<=0; send_state<=1;config_reply<=0;
             end
             case (send_state)
                 1: if (!tx_busy) begin
