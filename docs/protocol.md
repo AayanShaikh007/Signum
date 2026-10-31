@@ -67,3 +67,9 @@ another simulated order. On a missing reply, the host demo stops; it never retri
 automatically. Reset before restarting to synchronize the host reference position
 and the FPGA position. There is no error-response packet or position-query command
 yet. The internal error latch is visible in simulation, not in reply flags.
+
+## Runtime strategy settings
+
+Configuration uses a separate v2 request/acknowledgment before v1 quotes. See
+[the configuration fields and reset rules](fpga-configuration.md). The dashboard
+requires this handshake; the original CLI can still send default v1 quotes.

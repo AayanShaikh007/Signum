@@ -596,3 +596,57 @@ from this session.
   GitHub repository rename; local folder and origin URL retain current names.
 - Committed source rename separately from documentation/log, publishing to current
   main remote. After repository rename, origin can be updated to the actual new URL.
+
+### 2026-10-31 — Evaluate Signum for a LinkedIn post
+
+- Searched public LinkedIn posts/profiles explicitly identifying second-year CE
+  or adjacent EE students. Examples ranged from first FPGA programs and traffic
+  controllers to pipelined processors, hardware verification, and robotic systems.
+- Assessment: Signum merits a project/learning post for integration and verified
+  hardware communication. Public search is selected and incomplete; no percentile
+  ranking or claim of superiority over typical students is justified.
+- Identified limits: simple fixed hardware strategy, no demonstrated end-to-end
+  FPGA speed advantage over Python, custom strategies remain Python-only, and
+  broker paper execution is not directly performed by FPGA. Recommend a fresh
+  demonstrable run and concrete debugging/learning details before posting.
+- Research/advice only; no source change, tests, LinkedIn publication, commit or
+  push performed. Appended log locally per repository instructions.
+
+### 2026-10-31 — Backend-configurable FPGA strategies
+
+- Implemented user request to deploy supported frozen strategy settings over UART:
+  configurable anchor rule plus on-FPGA prior-sample SMA reversion, windows
+  2/4/8/16/32/64. Python retains other windows. Hardware bounds: threshold 1-500,
+  max order 1-20, absolute position 1-100. No arbitrary strategy code is uploaded.
+- Added version-2 CRC-protected atomic settings request, token/readback ACK and
+  rejection reply. Configuration locks after a valid setup or first quote until
+  physical reset. Invalid/mid-run configuration cannot alter state or clear kill.
+  Kept v1 quote/reply layouts and default CLI compatibility; separate v2 version
+  preserves old reserved-flag rejection. Config does not pulse trade LEDs.
+- Added bounded ring buffer/running sum in RTL; warmup HOLD and unsigned-price
+  extremes match Python. Narrowed position/order datapath within enforced bounds.
+- Backend configures every FPGA run before prices, verifies exact readback, then
+  uses the selected frozen Python reference for every reply. Failure invalidates
+  session, releases port, surfaces error, and sends no retry/quotes. The 2 ms
+  transaction pause remains. Settings status and counters stream to dashboard.
+- Recomputed compatibility for existing strategy files/snapshots; updated strategy
+  UI labels, reset/firmware notice, versioned introduction, README and detailed
+  protocol/programming/acceptance instructions in docs/fpga-configuration.md.
+- Validation: 76 backend tests, 17 original/extended Python/RTL tests, six frontend
+  tests and frontend production build passed (99 tests total). Added hardware
+  equivalence for all supported SMA windows, wraparound, clipping, extrema, kill,
+  rejected/locked settings; transport tests cover timeout, disconnect, legacy ACK,
+  CRC/token/readback failure and no retry/trade on failed configuration.
+- Material troubleshooting: first parser reused v1 reserved flag and broke a
+  corruption regression; isolated setup to v2 and restored passing behavior.
+  Initial frontend edit script hit Windows default text encoding; reran UTF-8.
+  Initial route missed timing at 25.58 MHz; bounded arithmetic revision passed at
+  post-route estimated 30.16 MHz against 27 MHz. Structural check zero problems,
+  2179 LUT4, 665 DFF, one BSRAM. Tool-library/ABC warnings and existing Starlette
+  httpx deprecation remain; no assertion of warning-free synthesis.
+- Built fresh ignored build/signum.fs. No physical programming, UART acceptance,
+  broker orders, backend restart or browser visual QA performed. User must flash
+  the new bitstream and reset S2 before using dashboard FPGA configuration.
+  Old firmware safely times out before quotes. Timing is estimated, not measured.
+- Publishing focused hardware/protocol, backend/transport/tests, dashboard/guide,
+  and documentation/log commits. GitHub repository rename remains user-managed.

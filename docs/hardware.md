@@ -159,3 +159,11 @@ Physical-board acceptance, a dedicated emergency-stop input, duplicate detection
 queued/pipelined requests, explicit error replies, dashboard, and comparative
 Python/C++/FPGA benchmarks remain future work. This is a simulated-order teaching
 project. The transport intentionally makes no exactly-once delivery promise.
+
+
+## Configurable strategy firmware
+
+The dashboard now requires the v2 configuration handshake before sending quotes.
+Rebuild and flash the new firmware before using this path; old firmware times
+out without receiving prices. See [configuration and board acceptance steps](fpga-configuration.md).
+The default CLI v1 check remains compatible with the original default strategy.

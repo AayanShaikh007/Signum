@@ -304,18 +304,19 @@ current revisions, `backups/` previous revisions, `snapshots/` frozen rules, and
 for backups; GitHub does not store them. The editor also offers browser draft
 recovery and revision restore. Autosave cannot protect against disk loss.
 
-Custom strategies currently run in Python. FPGA Live accepts only the original
-fixed-anchor rule (threshold 5, order 20, position limit 100); incompatible rules
-are rejected before opening UART. No new bitstream or FPGA strategy-upload
-protocol was added. Existing frontend/backend startup commands remain unchanged.
+FPGA Live supports configurable anchor rules and SMA reversion with windows
+2, 4, 8, 16, 32, 64. Threshold 1-500 ticks, order cap 1-20 and position cap 1-100
+are uploaded from the frozen snapshot before prices, then read back and verified.
+Other SMA windows remain Python-only. This configures implemented circuits; it
+does not compile arbitrary strategy code. See [FPGA configuration](docs/fpga-configuration.md).
 
 ## Rename from NanoQuant
 
 The project is now **Signum**. Python commands use `python -m signum` and
 `python -m signum.serial_demo`. Gowin uses `signum.gprj` with top module
 `signum_top`; future open-source builds produce `build/signum.fs`.
-The rename changes identifiers only: an already programmed board remains
-compatible and does not need reflashing for this update.
+The rename itself changed identifiers only. The subsequent configurable-strategy
+feature requires newly built firmware; flash it before using FPGA dashboard runs.
 
 Existing backend data, Alpaca settings, and browser recovery drafts are retained.
 Historical validation records keep the names of artifacts originally tested.
