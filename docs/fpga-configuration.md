@@ -92,3 +92,18 @@ LUT4 (25%), 665/6,480 DFF (10%), one block RAM. Structural synthesis check repor
 zero problems; packing produced `build/signum.fs`. Tool-library/ABC informational
 warnings remain in the synthesis log. These are tool results, not physical
 measurements. Physical acceptance after programming remains outstanding.
+
+### Physical acceptance (October 31, 2026)
+
+After the operator flashed and reset the board, the running FastAPI backend
+configured the physical COM6 FPGA for SMA16, threshold 5, max order 3, position
+cap 8. Settings acknowledgment matched; all 65 quote responses matched Python.
+The first 16 held during warmup; the run produced 15 BUY, 16 SELL, 33 HOLD
+(including kill). Maximum observed order was 3 and absolute position 6; this run
+did not reach the position clipping boundary. Kill was acknowledged. Including
+configuration, 66 UART replies validated with zero recorded communication or
+reference errors. Generated prices/local portfolio only; no broker orders.
+
+Measured host RTT: mean 4.2875 ms, range 4.1977-5.1801 ms, p95 4.4180 ms. This
+includes UART/USB/host overhead and does not measure isolated FPGA computation.
+Other supported windows have simulation coverage, not physical acceptance here.

@@ -650,3 +650,26 @@ from this session.
   Old firmware safely times out before quotes. Timing is estimated, not measured.
 - Publishing focused hardware/protocol, backend/transport/tests, dashboard/guide,
   and documentation/log commits. GitHub repository rename remains user-managed.
+
+### 2026-10-31 — Physical configurable FPGA acceptance via restarted backend
+
+- User requested backend restart and physical verification, then confirmed new
+  firmware flashed, S2 reset, and board ready. No backend listener existed on
+  port 8000; launched fresh hidden uvicorn process with ignored local logs.
+- Confirmed COM6 USB VID/PID 0403:6010. Used actual backend REST/WebSocket path
+  with Generated prices and Local $10,000; no Alpaca orders or account calls.
+- Created a clearly named local acceptance strategy and frozen snapshot: SMA16,
+  threshold 5, max order 3, position cap 8. Hardware v2 settings ACK readback
+  matched. 65 physical quote responses all matched the Python reference;
+  first 16 held for warmup. Decisions: 15 BUY, 16 SELL, 33 HOLD (including kill).
+  Largest absolute order 3; observed largest absolute position 6 (cap 8 was
+  respected but its clipping boundary was not reached in this physical run).
+- Kill acknowledged. 66/66 UART replies validated including configuration;
+  zero CRC/header/timeout/sequence/reference/transport errors. Port closed and
+  ownership released at end. Board is kill-latched and requires S2 reset before
+  another run. Backend remains running for dashboard use.
+- Measured host RTT mean 4.2875 ms, range 4.1977-5.1801 ms, p95 4.4180 ms for
+  65 quotes. Includes UART/USB/host overhead; no isolated physical engine latency
+  measured. No claim that other windows were physically tested.
+- Raw telemetry/report and acceptance helper stored locally in ignored
+  backend/data. Recorded measured acceptance in docs; no RTL/source changes.
