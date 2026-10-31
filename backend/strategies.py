@@ -12,6 +12,7 @@ from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field
 from signum.model import Engine
+from signum.configuration import HardwareSettings
 
 
 class Strategy(BaseModel):
@@ -34,7 +35,11 @@ def digest(value):
 
 
 def fpga_supported(spec):
-    return spec.kind == 'anchor' and (spec.threshold_ticks,spec.max_order,spec.position_limit)==(5,20,100)
+    try:
+        HardwareSettings(**{k:getattr(spec,k) for k in ('kind','threshold_ticks','max_order','position_limit','window')}).packed()
+        return True
+    except ValueError:
+        return False
 
 
 class StrategyEngine:
@@ -84,7 +89,7 @@ class StrategyStore:
         path=self.path(identifier)
         if not path.exists(): raise ValueError('Strategy file not found')
         data=json.loads(path.read_text(encoding='utf-8'))
-        Strategy(**data['spec'])
+        data['fpga_supported']=fpga_supported(Strategy(**data['spec']))
         return data
 
     def listing(self):
@@ -116,7 +121,7 @@ class StrategyStore:
         if not path.exists(): raise ValueError('Frozen strategy not found')
         saved=json.loads(path.read_text(encoding='utf-8'))
         if digest(saved['spec'])!=saved['sha256']: raise ValueError('Frozen strategy checksum mismatch')
-        Strategy(**saved['spec'])
+        saved['fpga_supported']=fpga_supported(Strategy(**saved['spec']))
         return saved
 
     def backups(self,identifier):

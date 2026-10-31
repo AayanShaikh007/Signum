@@ -9,8 +9,8 @@ from pydantic import BaseModel, ConfigDict, Field
 from typing import Literal
 
 from signum.feed import generate
-from signum.model import Engine
 from signum.transport import SerialSession
+from signum.configuration import HardwareSettings
 from .telemetry import telemetry
 from .market import MarketSample, Normalizer
 from .paper import PaperPortfolio
@@ -58,6 +58,7 @@ class Controller:
         self.broker_snapshot = None
         self.strategy_spec = BUILTIN
         self.strategy_snapshot = None
+        self.hardware_configuration = None
 
     def status(self):
         return dict(type='status', state=self.state, mode=self.config.mode,
@@ -68,6 +69,7 @@ class Controller:
                     source=self.config.source, symbol=self.config.symbol,
                     replay_id=self.config.replay_id, performance=self.performance.snapshot(),
                     execution=self.config.execution, broker=self.broker_snapshot,
+                    hardware_configuration=self.hardware_configuration,
                     strategy_snapshot_id=self.config.strategy_snapshot_id,
                     strategy={'spec':self.strategy_spec.model_dump(),'name':self.strategy_spec.name,'fpga_supported':fpga_supported(self.strategy_spec),'sha256':digest(self.strategy_spec.model_dump())})
 
@@ -93,8 +95,9 @@ class Controller:
         frozen = StrategyStore().snapshot(config.strategy_snapshot_id) if config.strategy_snapshot_id else None
         spec = Strategy(**frozen['spec']) if frozen else BUILTIN
         if config.mode == 'fpga' and not fpga_supported(spec):
-            raise ValueError('This frozen strategy is Python-only. Current FPGA supports only anchor threshold=5, max_order=20, position_limit=100. No strategy upload protocol exists yet.')
+            raise ValueError('This frozen strategy is Python-only. FPGA supports anchor rules or SMA windows 2, 4, 8, 16, 32, 64 within supported risk bounds.')
         self.strategy_spec,self.strategy_snapshot=spec,frozen
+        self.hardware_configuration = None
         self.dataset = None
         self.broker_snapshot = None
         if config.source == 'live':
@@ -180,6 +183,11 @@ class Controller:
                 self.emit(self.status())
             if self.config.mode == 'fpga':
                 session = await asyncio.to_thread(self.session_factory, self.config.port)
+                self.hardware_configuration={'state':'configuring'}
+                self.emit(self.status())
+                settings=HardwareSettings(**{k:getattr(self.strategy_spec,k) for k in ('kind','threshold_ticks','max_order','position_limit','window')})
+                self.hardware_configuration=await asyncio.to_thread(session.configure,settings,StrategyEngine(self.strategy_spec))
+                self.emit(self.status())
             while sequence < 2**32:
                 if self.stop_event.is_set() and not self.kill_requested:
                     break
@@ -234,6 +242,7 @@ class Controller:
                     'normalization': 'fixed-anchor basis points; 10000 = anchor',
                     'paper': paper, 'performance': self.performance.snapshot(),
                     'execution':self.config.execution,'broker':self.broker_snapshot,
+                    'hardware_configuration':self.hardware_configuration,
                     'strategy':{'name':self.strategy_spec.name,'sha256':digest(self.strategy_spec.model_dump()),
                                 'snapshot_id':self.config.strategy_snapshot_id},
                     'risk_checks': {'max_order':self.strategy_spec.max_order,'position_limit':self.strategy_spec.position_limit,
@@ -256,6 +265,8 @@ class Controller:
                 except asyncio.TimeoutError:
                     pass
         except Exception as exc:
+            if self.hardware_configuration and self.hardware_configuration['state']=='configuring':
+                self.hardware_configuration={'state':'failed','error':str(exc)}
             if session is not None:
                 self.performance.uart = dict(getattr(session, 'metrics', {}))
             self.error, self.state = str(exc), 'error'

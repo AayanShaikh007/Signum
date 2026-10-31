@@ -53,7 +53,8 @@ def test_strategy_rules_use_prior_window_and_latch_kill():
     assert engine.step(Quote(4,9980,20,True))==(0,4,1)
     assert engine.step(Quote(5,10100,20))==(0,4,1)
     assert fpga_supported(BUILTIN)
-    assert not fpga_supported(Strategy(threshold_ticks=6))
+    assert fpga_supported(Strategy(threshold_ticks=6))
+    assert fpga_supported(Strategy(kind='sma_reversion',window=16))
     assert not fpga_supported(Strategy(kind='sma_reversion'))
 
 

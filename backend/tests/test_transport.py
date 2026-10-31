@@ -6,7 +6,7 @@ import pytest
 
 from backend.service import Controller, StartConfig
 from signum.model import Engine, Quote
-from signum.protocol import RESPONSE_BODY, crc16, decode
+from signum.protocol import BODY, RESPONSE_BODY, crc16, decode
 from signum.transport import CommunicationError, Reply, SerialSession
 
 
@@ -24,6 +24,12 @@ class FakeSerial:
 
     def write(self, packet):
         self.writes.append(packet)
+        if packet[2:4]==bytes([2,2]):
+            _,_,_,token,settings,maximum=BODY.unpack(packet[:-2])
+            self.engine=Engine(threshold=settings & 65535,max_order=maximum,limit=(settings>>16)&4095)
+            body=RESPONSE_BODY.pack(b'NR',2,2,token,settings if settings<2**31 else settings-2**32,maximum,0)
+            self.pending=body+crc16(body).to_bytes(2,'little')
+            return len(packet)
         quote = decode(packet)
         order, position, killed = self.engine.step(quote)
         sequence = quote.sequence + (1 if self.corrupt == 'sequence' else 0)
@@ -107,6 +113,7 @@ def test_mock_live_stream_kill_and_close():
 def test_stop_waits_for_inflight_reply_before_release():
     class SlowSession:
         closed = False
+        def configure(self,*args): return {"state":"acknowledged"}
         def transact(self, quote):
             time.sleep(.03)
             assert not self.closed
@@ -133,6 +140,7 @@ def test_live_timeout_stops_and_releases_port_on_disconnect():
     class BrokenSession:
         closed = False
         calls = 0
+        def configure(self,*args): return {"state":"acknowledged"}
         def transact(self, quote):
             self.calls += 1
             raise CommunicationError('Timeout; physically reset FPGA')
@@ -203,5 +211,5 @@ def test_pending_kill_is_not_discarded_by_stop():
             await controller.stop('owner')
             assert controller.latest['killed']
             assert controller.state == 'killed'
-            assert len(fake.writes) == 1
+            assert len(fake.writes) == 2
     asyncio.run(scenario())

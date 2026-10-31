@@ -44,9 +44,9 @@ def test_actual_wire_mapping_for_replay_via_fake_hardware():
             controller=Controller(session_factory=lambda port:SerialSession(port,serial_factory=lambda *a,**k:fake))
             await controller.start('owner',StartConfig(mode='fpga',port='fake',reset_confirmed=True,source='replay',speed=20))
             await asyncio.wait_for(controller.task,4)
-        assert len(fake.writes)==12
+        assert len(fake.writes)==13
         assert controller.latest['validation_status']=='matched'
-        assert controller.latest['performance']['uart']['validated_replies']==12
+        assert controller.latest['performance']['uart']['validated_replies']==13
         assert controller.latest['python_compute_us'] is not None
         assert controller.reset_required and fake.closed
     asyncio.run(scenario())
@@ -87,7 +87,7 @@ def test_live_source_failure_closes_uart_and_releases_ownership():
         assert controller.state=='error'
         assert 'stream failure' in controller.error
         assert controller.owner is None
-        assert fake.closed and len(fake.writes)==0
+        assert fake.closed and len(fake.writes)==1
     asyncio.run(scenario())
 
 
