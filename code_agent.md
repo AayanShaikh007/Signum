@@ -673,3 +673,28 @@ from this session.
   measured. No claim that other windows were physically tested.
 - Raw telemetry/report and acceptance helper stored locally in ignored
   backend/data. Recorded measured acceptance in docs; no RTL/source changes.
+
+### 2026-10-31 — Explain Tang Nano 9K resources
+
+- Verified Sipeed specifications: 8640 LUT4, 6480 flip-flops and 468 Kbit block SRAM. Explained logic capacity versus register/block-memory storage, and related the existing Signum build usage (2179 LUT4, 665 DFF, one BSRAM) to these separate budgets. Conceptual explanation only; no source changes, tests, commit or push.
+
+### 2026-10-31 — Clarify Nexys board LUT counts
+
+- Checked Digilent Nexys A7 reference manual for 100T/50T variants (63400/32600 LUTs). User said Nexys 6, so exact board remains uncertain; answer conditional on A7 and request model confirmation. Explain LUT6 versus Tang LUT4 counts are not directly equivalent. No source changes, tests, commit or push.
+
+### 2026-10-31 — Launch services and provide hands-on learning lab
+
+- User requested both services and guided experiments. Confirmed backend port
+  8000 already running, no active owner, previous hardware test state killed.
+  Frontend port 5173 had no listener. Automatic policy review rejected frontend
+  Start-Process launch; did not retry through an alternative launch mechanism.
+  User must run npm run dev in frontend. Backend required no restart.
+- Read actual controls and listed local datasets: NVDA 1959 one-minute bars,
+  AAPL 416 five-minute bars, plus synthetic 12-sample DEMO. Added reusable
+  docs/hands-on-lab.md with prediction, controlled strategy comparisons, SMA
+  warmup, costs/validation, historical replay, physical configuration/kill,
+  and recovery/export exercises. Distinguished ledger vs engine, local vs
+  broker paper execution, and current-mark vs next-sample fill assumptions.
+- No runs started, orders sent or hardware reset performed. No new tests needed
+  for instructions; browser QA not performed. Prior board remains kill-latched;
+  instruct S2 before hardware exercise. Recording and publishing documentation.
