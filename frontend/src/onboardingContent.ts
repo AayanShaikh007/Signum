@@ -23,3 +23,13 @@ export function shouldShowGuide(storage: GuideStorage | null = browserStorage())
 export function rememberGuide(storage: GuideStorage | null = browserStorage()): void {
   try { storage?.setItem(STORAGE_KEY, GUIDE_VERSION) } catch { /* The guide remains usable without storage. */ }
 }
+
+
+// Public demo copy intentionally excludes backend/Alpaca/physical control steps.
+export const publicGuideSteps = [
+  {tag:'WELCOME TO SIGNUM',title:'Your own trading experiment.',body:'This public demo runs entirely in your browser. Start with $10,000 in virtual cash, generate prices, and inspect each rule-based decision.',tip:'No FPGA is connected. No Alpaca account or real orders. Each visitor has independent simulation state.',visual:['Your browser','Your rules','Virtual portfolio']},
+  {tag:'01 / FOLLOW A SIGNAL',title:'Watch a price become a decision.',body:'Choose generated prices or the bundled synthetic replay, then Start. Click BUY/SELL markers to inspect inputs, engine orders and actual simulated fills.',tip:'Generated and bundled replay data are synthetic. Import historical CSV files locally for your own data; CSV files never upload. The ledger is long-only and may clip engine orders.',visual:['Price','BUY / SELL / HOLD','Paper fill']},
+  {tag:'02 / CREATE A RULE',title:'Write a hypothesis. Change one thing.',body:'Choose fixed-anchor or moving-average reversion. Adjust threshold, order cap and position cap. The current strategy draft autosaves in this browser; import/export JSON for portable backups.',tip:'SMA uses the previous N prices and holds during warmup. Each new run snapshots your settings and starts fresh. Browser storage can be cleared; export work you want to keep.',visual:['Hypothesis','Rule settings','Autosave + export']},
+  {tag:'03 / TEST CAREFULLY',title:'Separate development from validation.',body:'Backtests use the first 70% of replay for development and final 30% for validation. They simulate next-sample fills with fees and slippage, and export frozen settings with results.',tip:'Tune on development, then inspect validation. Main terminal fills at current marks, so results differ from backtests. A profitable simulation does not establish a profitable real strategy.',visual:['Develop','Freeze result','Validate']},
+  {tag:'04 / TRY REAL HARDWARE',title:'The FPGA lives in the local version.',body:'The GitHub project includes Verilog, Python, UART validation and board setup. A Tang Nano 9K can run supported configured strategies after cloning and flashing locally.',tip:'Hardware acceptance numbers shown here are recorded developer results. This browser measures no physical FPGA or UART latency. Stop and simulated kill never submit trades.',visual:['Explore source','Clone + flash','Connect your FPGA']},
+]
