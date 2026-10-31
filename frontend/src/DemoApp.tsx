@@ -64,6 +64,7 @@ export default function DemoApp() {
     try {
       if(file.size>(csv?2_000_000:20_000))throw new Error('File is too large.')
       const text=await file.text()
+      if(current.current)throw new Error('Reset the replay before importing a file.')
       if(csv){const values=parseCsv(text);setCustom({id:'imported',name:file.name.replace(/\.csv$/i,''),symbol:'CSV',kind:'imported',interval:'1 CSV row',rows:values,description:'Your imported price history'});setSelected('imported');setPeriod('all')}
       else setSpec(validateSpec(JSON.parse(text)))
       setError('');setExperiment(null)
@@ -73,8 +74,8 @@ export default function DemoApp() {
   const played=current.current?.index??0
   const chartRows=rows.filter(row=>!row.control_only)
   return <div className="replay-app">
-    <Onboarding open={guide} onDismiss={dismiss} steps={publicGuideSteps}/>
-    <header className="replay-nav"><a href="#" className="replay-brand"><span>S</span>Signum<small>Stock strategy playground</small></a><nav aria-label="Main navigation"><a href="#rules">Your rule</a><a href="#learn">How it works</a><a href={repo} target="_blank" rel="noreferrer">GitHub<ExternalLink size={13}/></a><button onClick={()=>setGuide(true)} aria-label="Open introduction"><HelpCircle size={18}/></button></nav></header>
+    <Onboarding open={guide} onDismiss={dismiss} steps={publicGuideSteps} reopenText="Reopen this guide with the Help button in the header."/>
+    <header className="replay-nav"><a href="#" className="replay-brand"><span>S</span>Signum<small>Stock strategy playground</small></a><nav aria-label="Main navigation"><a href="#rules">Your rule</a><a href="#learn">How it works</a><a href={repo} target="_blank" rel="noreferrer">GitHub<ExternalLink size={13}/></a><button onClick={()=>setGuide(true)} aria-label="Open introduction"><HelpCircle size={18}/><span>Help</span></button></nav></header>
     <main className="replay-main">
       <div className="replay-intro"><div><h1>See when a trading bot buys and sells.</h1><p>Replay past stock prices with $10,000 in pretend money. Change a rule, speed up time, and see what happens.</p></div><span className="replay-disclosure"><i/>Simulation only · no real orders</span></div>
       {error&&<div className="replay-error" role="alert">{error}<button onClick={()=>setError('')}>Dismiss</button></div>}

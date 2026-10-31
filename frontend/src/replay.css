@@ -159,3 +159,6 @@
 @media(prefers-reduced-motion:reduce){.replay-app *, .info-tip-popup{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 
 .warmup-note {font-size:11px;color:#b3c9de;background:#182a3e;padding:8px 10px;border-radius:5px;margin:12px 0}
+
+.replay-nav nav > button {display:flex;align-items:center;gap:6px;font-size:12px}
+.replay-price > .replay-price-label {flex-basis:100%;font-size:11px;color:#8ea1b9;margin-bottom:-4px}

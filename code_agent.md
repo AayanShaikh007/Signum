@@ -812,3 +812,27 @@ from this session.
   for safe direct edits instead. No hardware/broker actions; no RTL changes.
 - Publishing focused data, engine/tests, public UI, and documentation/log commits.
   Production desktop/mobile/tooltip/playback verification follows deployment.
+
+### 2026-10-31 — Redesign production acceptance and help interactions
+
+- Vercel production deployment dpl_8CbrDGaJLmdAhboA4ooVLRYzE5h2 reached READY from
+  8395297. Reviewed desktop screenshot and 390px mobile viewport on public URL.
+- Exercised NVDA three-month replay at 20x: 62/62 samples, ending March 31, 2017,
+  completed buy/sell markers and trade history, fees and portfolio changes.
+  Replayed at 1x, paused/resumed and paused again at 17/62 with state retained.
+  Ran separate last-30% test (19 samples) on mobile; fresh state produced no
+  completed trades, consistent with warmup/selected prices, not a fabricated fill.
+- Price-data/speed/backtest info popups opened on click; keyboard Enter opened
+  help and Escape closed it. Backtest info did not toggle its containing details.
+  Mobile popup stayed within viewport; inspected cards/labels/controls measured
+  zero overflow at 390px and desktop widths. Reset restored initial portfolio;
+  returned viewport to default and selected AAPL/full year/10x, no active run.
+- Initial new-page close-guide click timed out during browser load; fresh state
+  confirmed loaded dialog and next click worked. Exact-label test selector for
+  wrapped select did not match; used non-exact label and verified selection.
+- Final usability adjustments: explicit starting/replayed close label, visible
+  Help text with matching guide instructions, asynchronous import guard if a
+  replay starts while a file is being read. Existing 20 tests passed again;
+  final demo build checked. Local build already passed. No hardware/broker actions.
+- Pushing final focused acceptance/usability commit and retaining main automatic
+  production deployment. Browser no-console-error check and final state follow.

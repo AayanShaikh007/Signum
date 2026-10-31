@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, Check, Sparkles, X } from 'lucide-react'
 import { guideSteps } from './onboardingContent'
 
-export default function Onboarding({ open, onDismiss, steps = guideSteps }: { open: boolean; onDismiss: () => void; steps?: typeof guideSteps }) {
+export default function Onboarding({ open, onDismiss, steps = guideSteps, reopenText = 'You can reopen this guide from “Introduction” in the top bar.' }: { open: boolean; onDismiss: () => void; steps?: typeof guideSteps; reopenText?: string }) {
   const dialog = useRef<HTMLDialogElement>(null)
   const [step,setStep] = useState(0)
   const content = steps[step]
@@ -29,6 +29,6 @@ export default function Onboarding({ open, onDismiss, steps = guideSteps }: { op
     </div>
     <div className="guide-progress"><span>Step {step+1} of {steps.length}</span><div aria-label="Introduction steps">{steps.map((item,index) => <button key={item.tag} aria-label={`Go to step ${index+1}: ${item.title}`} aria-current={index === step ? 'step' : undefined} className={index === step ? 'current' : index < step ? 'done' : ''} onClick={() => setStep(index)}/>)}</div></div>
     <div className="guide-actions"><button className="guide-skip" onClick={onDismiss}>Skip introduction</button><div>{step > 0 && <button className="button secondary" onClick={() => setStep(step-1)}><ArrowLeft size={14}/> Back</button>}<button className="button primary" onClick={() => last ? onDismiss() : setStep(step+1)}>{last ? 'Open my terminal' : step === 0 ? 'Show me around' : 'Next'}<ArrowRight size={14}/></button></div></div>
-    <p className="guide-reopen">You can reopen this guide from “Introduction” in the top bar.</p>
+    <p className="guide-reopen">{reopenText}</p>
   </dialog>
 }
