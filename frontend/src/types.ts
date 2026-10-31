@@ -26,6 +26,7 @@ export interface Telemetry {
   decision: 'BUY' | 'SELL' | 'HOLD' | 'KILL'; position: number; killed: boolean
   validation_status: 'matched' | 'reference'; host_round_trip_us: number | null
   python_compute_us: number | null; engine_cycles: number | null; estimated_engine_ns: number | null
+  browser_compute_us?: number
   symbol?: string; data_source?: string; market_timestamp?: string | null
   price_usd?: number | null; anchor_usd?: number | null; input_quantity?: number
   control_only?: boolean; normalization?: string; paper?: Paper; performance?: Performance
