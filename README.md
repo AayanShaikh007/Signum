@@ -1,4 +1,4 @@
-# NanoQuant — Tang Nano 9K FPGA trading-engine project
+# Signum — Tang Nano 9K FPGA trading-engine project
 
 A learning and portfolio project: deterministic simulated market data, a Python
 reference engine, and a matching Verilog engine with UART packet transport.
@@ -48,7 +48,7 @@ Stop ends generation; each new simulation starts at position zero with seed 1.
 Adjust speed from 1 to 20 quotes/second. Export saves the last 240 captured quotes;
 the table displays the latest 12 matching its filter.
 
-For **FPGA Live**: program the current `nanoquant.fs`, select the board UART port
+For **FPGA Live**: program the current `signum.fs`, select the board UART port
 (last verified: COM6), close other applications using that serial port, physically
 reset the board, and check the reset-confirmation box before starting. Every reply
 is validated against the existing protocol and Python reference. The backend keeps
@@ -123,7 +123,7 @@ basis-point ticks for the existing engine; both values are visible in inspectors
 From the project directory, with Python 3.10+ (3.12.14 actually tested):
 
 ```powershell
-python -m nanoquant --count 20 --seed 1
+python -m signum --count 20 --seed 1
 python -m unittest discover -s tests -v
 ```
 
@@ -137,7 +137,7 @@ For this checkout on Windows, once OSS CAD Suite is extracted to
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements-hardware.txt
 . .\tools\activate.ps1
-python -m nanoquant --count 20 --seed 1
+python -m signum --count 20 --seed 1
 python -m unittest discover -s tests -v
 python tools/build.py
 ```
@@ -145,15 +145,15 @@ python tools/build.py
 Run the activation line in each new PowerShell terminal. For a different suite
 location, use `. .\tools\activate.ps1 -SuitePath 'D:\tools\oss-cad-suite'`.
 The helper changes PATH only for the current terminal. The build produces
-`build/nanoquant.fs`; programming and checking the physical board are separate
+`build/signum.fs`; programming and checking the physical board are separate
 steps described below.
 
 On the original development PC, Python uses this confirmed bundled executable:
 
 ```powershell
-Set-Location 'C:\Users\shaik\Coding\nanoquant'
+Set-Location 'C:\Users\shaik\Coding\signum'
 $pythonExe = 'C:\Users\shaik\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
-& $pythonExe -m nanoquant --count 20 --seed 1
+& $pythonExe -m signum --count 20 --seed 1
 & $pythonExe -m unittest discover -s tests -v
 ```
 
@@ -201,8 +201,8 @@ python -m unittest discover -s tests -v
 python tools/build.py
 ```
 
-Output: `build/nanoquant.fs`. The script does not program hardware. Alternatively,
-open `nanoquant.gprj` in Gowin IDE and set `nanoquant_top` as top. That IDE path is
+Output: `build/signum.fs`. The script does not program hardware. Alternatively,
+open `signum.gprj` in Gowin IDE and set `signum_top` as top. That IDE path is
 provided but unverified here; the open-source build is the confirmed flow.
 
 After programming the correct board and pressing/releasing reset, on the board PC:
@@ -210,7 +210,7 @@ After programming the correct board and pressing/releasing reset, on the board P
 ```powershell
 python -m pip install -r requirements-hardware.txt
 python -m serial.tools.list_ports
-python -m nanoquant.serial_demo --port COM5 --count 20 --seed 1 --kill-at-end
+python -m signum.serial_demo --port COM5 --count 20 --seed 1 --kill-at-end
 ```
 
 Replace COM5 with the actual serial port. This hardware demo requires pyserial;
@@ -220,20 +220,20 @@ its 22-response live check passed on COM6; see the validation record.
 
 | Path | Purpose |
 |---|---|
-| nanoquant/model.py | Python decision and risk reference |
-| nanoquant/feed.py | Repeatable simulated quotes |
-| nanoquant/protocol.py | Quote encoding/decoding and reply decoding |
-| nanoquant/serial_demo.py | Stop-and-wait PC-to-board checker |
+| signum/model.py | Python decision and risk reference |
+| signum/feed.py | Repeatable simulated quotes |
+| signum/protocol.py | Quote encoding/decoding and reply decoding |
+| signum/serial_demo.py | Stop-and-wait PC-to-board checker |
 | rtl/engine.v | Synthesizable trading engine |
 | rtl/uart_rx.v, rtl/uart_tx.v | Serial byte reception/transmission |
 | rtl/packet_rx.v | Header, CRC, timeout and framing validation |
-| rtl/nanoquant_core.v | Parser/engine/reply integration |
-| rtl/nanoquant_top.v | Clock, startup reset and board ports |
+| rtl/signum_core.v | Parser/engine/reply integration |
+| rtl/signum_top.v | Clock, startup reset and board ports |
 | rtl/tb_engine.v | Original engine simulation testbench |
-| tests/test_nanoquant.py | Python tests and 1,047-cycle engine equivalence |
+| tests/test_signum.py | Python tests and 1,047-cycle engine equivalence |
 | tests/tb_serial.v, tests/test_serial.py | Serial bit-level tests and response checks |
 | constraints/ | Tang Nano 9K physical and clock constraints |
-| nanoquant.gprj | Gowin project template |
+| signum.gprj | Gowin project template |
 | tools/build.py | Reproducible synthesis, routing and packing |
 
 Tests cover exact thresholds, size/position limits, kill/reset, 10,000-quote risk
@@ -308,3 +308,16 @@ Custom strategies currently run in Python. FPGA Live accepts only the original
 fixed-anchor rule (threshold 5, order 20, position limit 100); incompatible rules
 are rejected before opening UART. No new bitstream or FPGA strategy-upload
 protocol was added. Existing frontend/backend startup commands remain unchanged.
+
+## Rename from NanoQuant
+
+The project is now **Signum**. Python commands use `python -m signum` and
+`python -m signum.serial_demo`. Gowin uses `signum.gprj` with top module
+`signum_top`; future open-source builds produce `build/signum.fs`.
+The rename changes identifiers only: an already programmed board remains
+compatible and does not need reflashing for this update.
+
+Existing backend data, Alpaca settings, and browser recovery drafts are retained.
+Historical validation records keep the names of artifacts originally tested.
+The local folder and GitHub remote keep their current names until renamed
+separately; the absolute startup paths above match the current checkout.

@@ -568,3 +568,31 @@ from this session.
 - Delivered meaningful commits for persistence, API/backtests, paper risk limits,
   workspace UI, regression tests, reconnect metadata, docs/guide, and this log;
   publishing to main. Strategy upload to FPGA remains a later milestone.
+
+### 2026-10-24 — Rename before LinkedIn post
+
+- User requires renaming NanoQuant before preparing/publishing its LinkedIn post.
+  Treat the rename as a prerequisite when helping with that post; remind the user
+  if they request it before the rename is complete. New name is not selected yet.
+- Recorded preference only; no application changes or tests needed. This does not
+  provide control over posts the user makes independently outside this chat.
+
+### 2026-10-31 — Rename project to Signum
+
+- User selected Signum and will rename the GitHub repository separately. Renamed
+  dashboard branding, favicon, page/API titles, export names, frontend package,
+  Python package/commands/imports, Gowin project, RTL module/file identifiers,
+  build artifacts, tests, active documentation, and terminal activation message.
+- Updated introduction and version. Retained old browser storage keys to preserve
+  draft recovery and dismissal storage; no saved research, credentials, or account
+  files changed. Preserved historical journal/validation records and log history.
+- Verified RTL content differs only by replacing module identifiers. Wire format
+  and trading logic unchanged; existing flashed hardware stays compatible.
+- Validation: 66 backend tests, six frontend tests, 15 original Python/RTL tests
+  all passed; production frontend build and renamed CLI help commands passed.
+  Existing Starlette/httpx deprecation warning persists. No hardware commands,
+  broker orders, server restarts, or browser visual verification performed.
+- Recorded completion of rename prerequisite for LinkedIn post. User controls
+  GitHub repository rename; local folder and origin URL retain current names.
+- Committed source rename separately from documentation/log, publishing to current
+  main remote. After repository rename, origin can be updated to the actual new URL.

@@ -13,14 +13,14 @@ Gowin Programmer's JTAG interface is separate; close any tool using the UART por
 
 ## Modes and data
 
-The generated data source reuses `nanoquant.feed.generate` with seed 1 and integer prices. There
+The generated data source reuses `signum.feed.generate` with seed 1 and integer prices. There
 is no stock exchange connection and all orders/fills remain simulated.
 
-- **Simulation:** decisions come from `nanoquant.model.Engine`. Host UART latency,
+- **Simulation:** decisions come from `signum.model.Engine`. Host UART latency,
   engine cycles, and FPGA estimates are null. Python step duration is measured
   separately with the host's monotonic performance clock.
-- **FPGA Live:** quotes go to physical hardware through `nanoquant.transport`.
-  That transport is also used by the original `nanoquant.serial_demo` command.
+- **FPGA Live:** quotes go to physical hardware through `signum.transport`.
+  That transport is also used by the original `signum.serial_demo` command.
   Every reply is decoded with the existing protocol, checked for header/CRC,
   sequence, cycle count, and order/position/kill equivalence against Python.
 

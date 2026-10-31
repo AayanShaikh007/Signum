@@ -1,6 +1,6 @@
 # Market sources, paper trading, replay, and engineering metrics
 
-Everything in NanoQuant remains local paper trading. There are no brokerage order
+Everything in Signum remains local paper trading. There are no brokerage order
 API calls, account transactions, or real-money execution in this application.
 
 ## Setup and data access

@@ -1,4 +1,4 @@
-# NanoQuant quote protocol v1
+# Signum quote protocol v1
 
 Transport: UART 115200 baud, 8 data bits, no parity, 1 stop bit, LSB first,
 idle high. The implemented 27 MHz divider is 234 clocks per bit (115384.6 baud,
