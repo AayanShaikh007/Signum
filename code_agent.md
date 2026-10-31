@@ -730,3 +730,27 @@ from this session.
   Deployment status and public HTTP verification will be recorded after Vercel
   finishes. Localhost browser access restrictions were not bypassed; no local
   browser visual QA performed. No FPGA commands or Alpaca orders sent.
+
+### 2026-10-31 — Public demo deployment verified
+
+- Vercel Git production deployment dpl_8AEnSSrpojy6V1JSNF2ATwXBH83t reached READY
+  from main commit 4092feb. Public URL https://signum-aayan14.vercel.app/
+  (also assigned signum-azure.vercel.app). Verified public HTTP 200, entry assets
+  200, and connect-src none header. Added public link to README.
+- Git auto-deployment appeared shortly after the initial empty listing. A manual
+  deployment for the same SHA had queued; cancelled that duplicate only and
+  retained the successful Git-triggered deployment. No other projects changed.
+- Verified remote UI through the supported in-app browser (no localhost access
+  bypass): introduction close, Start/Stop, populated price chart/BUY/SELL markers,
+  virtual ledger updates, SMA16 preset, frozen development backtest (336 samples)
+  and recorded-hardware explanation. Inspected desktop screenshot; no browser
+  console errors. Left public demo open as deliverable. Mobile CSS implemented
+  but no separate mobile screenshot; CSV file chooser/export download not manually
+  exercised. Parsing/export data paths have code/unit validation as recorded.
+- Vercel build succeeded with npm environment/install-script warnings and one
+  audit notice; separate production-only dependency audit reported zero findings.
+  No live quotes, personal trading data, credentials, FPGA access or broker orders
+  were included. Browser simulation and recorded hardware results clearly differ.
+- Three implementation/documentation commits already pushed; this fourth focused
+  publication record/link commit completes work. Subsequent main pushes auto-deploy
+  the browser-only Vercel build; local dev/build remains Python/FPGA mode.

@@ -1,5 +1,8 @@
 # Signum — Tang Nano 9K FPGA trading-engine project
 
+**[Try the public browser demo](https://signum-aayan14.vercel.app/)** — independent virtual portfolios; no FPGA or Alpaca account required.
+
+
 A learning and portfolio project: deterministic simulated market data, a Python
 reference engine, and a matching Verilog engine with UART packet transport.
 All orders and fills are simulated. Local runs stay on this PC; optional Alpaca PAPER execution submits virtual orders to the paper broker only.
