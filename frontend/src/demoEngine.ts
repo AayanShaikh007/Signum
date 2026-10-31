@@ -14,11 +14,11 @@ export function validateSpec(value:unknown):DemoSpec {
   if(!value || typeof value!=='object' || Array.isArray(value)) throw new Error('Import a strategy JSON object.')
   const spec=value as Record<string,unknown>
   const allowed=Object.keys(defaultSpec)
-  if(Object.keys(spec).some(key=>!allowed.includes(key))) throw new Error('Unknown strategy fields. Export a declarative .strategy.json file.')
+  if(Object.keys(spec).some(key=>!allowed.includes(key))) throw new Error('This file has unsupported fields. Import a Signum rule JSON file.')
   const result={...defaultSpec,...spec} as DemoSpec
-  if(result.schema_version!==1 || !['anchor','sma_reversion'].includes(result.kind) || typeof result.name!=='string' || !result.name.trim() || result.name.length>100 || typeof result.hypothesis!=='string' || result.hypothesis.length>5000) throw new Error('Invalid strategy name, template or hypothesis.')
+  if(result.schema_version!==1 || !['anchor','sma_reversion'].includes(result.kind) || typeof result.name!=='string' || !result.name.trim() || result.name.length>100 || typeof result.hypothesis!=='string' || result.hypothesis.length>5000) throw new Error('Check the rule name, description and type.')
   for(const [key,min,max] of [['threshold_ticks',1,500],['window',2,500],['max_order',1,20],['position_limit',1,100]] as const) {
-    if(!Number.isInteger(result[key]) || result[key]<min || result[key]>max) throw new Error(`${key} must be an integer between ${min} and ${max}.`)
+    if(!Number.isInteger(result[key]) || result[key]<min || result[key]>max) throw new Error(`${({threshold_ticks:"Price gap",window:"Average length",max_order:"Shares per order",position_limit:"Share limit"})[key]} must be a whole number between ${min} and ${max}.`)
   }
   return result
 }
@@ -85,12 +85,20 @@ export function parseCsv(text:string):Sample[] {
 }
 export class DemoRun {
   engine:DemoEngine;ledger:DemoLedger;index=0;anchor:number|null=null
-  constructor(readonly spec:DemoSpec,readonly fees:number,readonly id:string,readonly source:'generated'|'synthetic'|'imported') {this.engine=new DemoEngine({...spec});this.ledger=new DemoLedger(fees,spec.position_limit)}
+  pending=0
+  constructor(readonly spec:DemoSpec,readonly fees:number,readonly id:string,readonly source:'generated'|'synthetic'|'imported'|'historical',readonly options:{symbol?:string;nextSampleFills?:boolean;slippageBps?:number}={}) {
+    if(!Number.isFinite(options.slippageBps??0)||(options.slippageBps??0)<0||(options.slippageBps??0)>100)throw new Error('Slippage must be 0–100 bps.')
+    this.engine=new DemoEngine({...spec});this.ledger=new DemoLedger(fees,spec.position_limit)
+  }
   tick(sample:Sample,kill=false):Telemetry {
     this.anchor??=this.source==='generated'?100:sample.price
     const price=normalizedTicks(sample.price,this.anchor)
     const before=performance.now(),result=this.engine.step(price,sample.quantity,kill),compute=(performance.now()-before)*1000
-    return {type:'telemetry',run_id:this.id,timestamp:new Date().toISOString(),mode:'simulation',sequence:this.index++,price,quantity:sample.quantity,...result,decision:result.killed?'KILL':result.order>0?'BUY':result.order<0?'SELL':'HOLD',validation_status:'reference',host_round_trip_us:null,python_compute_us:null,engine_cycles:null,estimated_engine_ns:null,symbol:this.source==='imported'?'CSV':'DEMO',data_source:this.source==='generated'?'generated':this.source==='synthetic'?'synthetic_fixture':'browser_csv',market_timestamp:sample.timestamp,price_usd:sample.price,anchor_usd:this.anchor,paper:this.ledger.apply(result.order,sample.price),risk_checks:{max_order:this.spec.max_order,position_limit:this.spec.position_limit,position_before:result.before,position_after:result.position,order_within_limit:Math.abs(result.order)<=this.spec.max_order,position_within_limit:Math.abs(result.position)<=this.spec.position_limit},browser_compute_us:compute}
+    const fillOrder=this.options.nextSampleFills?(kill?0:this.pending):result.order
+    const fillPrice=sample.price*(1+Math.sign(fillOrder)*(this.options.slippageBps??0)/10000)
+    const paper=this.ledger.apply(fillOrder,fillPrice,sample.price)
+    this.pending=kill?0:result.order
+    return {type:'telemetry',run_id:this.id,timestamp:new Date().toISOString(),mode:'simulation',sequence:this.index++,price,quantity:sample.quantity,...result,decision:result.killed?'KILL':result.order>0?'BUY':result.order<0?'SELL':'HOLD',validation_status:'reference',host_round_trip_us:null,python_compute_us:null,engine_cycles:null,estimated_engine_ns:null,symbol:this.options.symbol??(this.source==='imported'?'CSV':'DEMO'),data_source:this.source==='generated'?'generated':this.source==='synthetic'?'synthetic_fixture':this.source==='historical'?'bundled_history':'browser_csv',market_timestamp:sample.timestamp,price_usd:sample.price,anchor_usd:this.anchor,paper,fill_price_usd:paper.filled_order?fillPrice:null,risk_checks:{max_order:this.spec.max_order,position_limit:this.spec.position_limit,position_before:result.before,position_after:result.position,order_within_limit:Math.abs(result.order)<=this.spec.max_order,position_within_limit:Math.abs(result.position)<=this.spec.position_limit},browser_compute_us:compute}
   }
 }
 function normalizedTicks(price:number,anchor:number) {

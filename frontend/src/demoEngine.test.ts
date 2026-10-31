@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import parity from './demoParity.json'
 import { backtest, defaultSpec, DemoEngine, DemoLedger, DemoRun, generator, parseCsv, syntheticReplay, validateDraft, validateSpec } from './demoEngine'
 import { readLocal, writeLocal } from './demoStorage'
+import { datasets, marketDate, playbackTime, replaySpeedText, selectPeriod } from './replayData'
 
 describe('browser simulator matches existing Python rules and ledger',()=>{
   for(const fixture of parity)it(`${fixture.spec.kind}, threshold ${fixture.spec.threshold_ticks}, cap ${fixture.spec.max_order}`,()=>{
@@ -28,6 +29,26 @@ describe('browser simulator matches existing Python rules and ledger',()=>{
     const e=new DemoEngine({...defaultSpec,kind:'sma_reversion',window:2,max_order:3})
     expect(e.step(10000,20).order).toBe(0);expect(e.step(10000,20).order).toBe(0);expect(e.step(9990,20).order).toBe(3)
   })
+  it('executes replay signals on the next price and cancels pending orders on kill',()=>{
+    const run=new DemoRun(defaultSpec,0,'next','historical',{nextSampleFills:true,symbol:'AAPL'})
+    const sample=(price:number)=>({timestamp:'2017-01-03T00:00:00Z',price,quantity:3})
+    expect(run.tick(sample(100)).paper?.filled_order).toBe(0)
+    expect(run.tick(sample(99)).paper?.filled_order).toBe(0)
+    const fill=run.tick(sample(98))
+    expect(fill.paper?.filled_order).toBe(3);expect(fill.fill_price_usd).toBe(98)
+    expect(fill.symbol).toBe('AAPL');expect(fill.data_source).toBe('bundled_history')
+    expect(run.tick(sample(97),true).paper?.filled_order).toBe(0)
+    expect(run.pending).toBe(0)
+  })
+  it('replaying a complete period agrees with batch backtesting under the same costs',()=>{
+    const data=datasets[0].rows,split=Math.floor(data.length*.7),spec={...defaultSpec,max_order:3,position_limit:8}
+    const run=new DemoRun(spec,1,'next','historical',{nextSampleFills:true,slippageBps:2})
+    let last=run.tick(data[0])
+    for(const sample of data.slice(1,split))last=run.tick(sample)
+    const expected=backtest(spec,data,'development',1,2)
+    expect(last.paper?.equity).toBe(expected.finalEquity);expect(last.paper?.fill_count).toBe(expected.fills)
+    expect(last.paper?.fees).toBe(expected.fees)
+  })
   it('clips long-only fills, cash and position independently',()=>{
     const ledger=new DemoLedger(0,3)
     expect(ledger.apply(-20,100).filled_order).toBe(0)
@@ -39,6 +60,17 @@ describe('browser simulator matches existing Python rules and ledger',()=>{
   })
 })
 describe('replay, research and persistence',()=>{
+  it('bundles dated real histories separately from synthetic practice and labels speed honestly',()=>{
+    const real=datasets.filter(d=>d.kind==='historical')
+    expect(real.map(d=>d.symbol)).toEqual(['AAPL','NVDA','MSFT'])
+    for(const data of real){expect(data.rows).toHaveLength(251);expect(data.rows[0].timestamp).toBe('2017-01-03T00:00:00Z');expect(data.rows.at(-1)?.timestamp).toBe('2017-12-29T00:00:00Z');expect(data.rows.every((row,i)=>row.price>0&&(i===0||row.timestamp>data.rows[i-1].timestamp))).toBe(true)}
+    expect(selectPeriod(real[0],'3m').length).toBeLessThan(selectPeriod(real[0],'6m').length)
+    expect(selectPeriod(real[0],'6m').length).toBeLessThan(251)
+    expect(replaySpeedText(real[0],20)).toBe('20 trading days per second')
+    expect(replaySpeedText(datasets[3],1)).toBe('1 price sample per second')
+    expect(marketDate('2017-01-03T00:00:00Z')).toBe('Jan 3, 2017')
+    expect(playbackTime(125999)).toBe('2:05')
+  })
   it('rejects malformed, out-of-order and timezone-free CSV without executing it',()=>{
     for(const text of ['price\n1','timestamp,price\n2026-01-01,5\n2026-01-02,5\n2026-01-03,5\n2026-01-04,5','timestamp,price\n2026-01-01T00:00:00Z,5\n2026-01-01T00:00:00Z,5\n2026-01-03T00:00:00Z,5\n2026-01-04T00:00:00Z,5'])expect(()=>parseCsv(text)).toThrow()
     const rows=parseCsv('timestamp,price\n2026-01-01T00:00:00Z,100\n2026-01-02T00:00:00Z,99\n2026-01-03T00:00:00Z,101\n2026-01-04T00:00:00Z,100')
