@@ -3,12 +3,13 @@ import { ArrowDownLeft, ArrowUpRight, RotateCcw, Play, Pause, Download, Upload, 
 import Onboarding from './Onboarding'
 import InfoTip from './InfoTip'
 import { publicGuideSteps } from './onboardingContent'
-import { backtest, defaultSpec, DemoRun, parseCsv, validateDraft, validateSpec } from './demoEngine'
+import { backtest, DemoRun, parseCsv, validateDraft, validateSpec } from './demoEngine'
 import type { BacktestResult, DemoSpec, Sample } from './demoEngine'
 import { DEMO_DRAFT, readLocal, writeLocal } from './demoStorage'
 import { datasets, historicalSource, marketDate, playbackTime, replaySpeedText, selectPeriod } from './replayData'
 import type { ReplayData } from './replayData'
 import type { Telemetry } from './types'
+import { defaultDemoRule, defaultDemoStock } from './demoDefaults'
 import './replay.css'
 const Chart=lazy(()=>import('./ReplayChart'))
 const dollars=(v:number)=>v.toLocaleString('en-US',{style:'currency',currency:'USD'})
@@ -20,20 +21,25 @@ function download(value:unknown,name:string) {
 interface Runtime {run:DemoRun;data:Sample[];index:number;active:boolean;last:Sample|null;elapsed:number;activeSince:number}
 interface Experiment {spec:DemoSpec;result:BacktestResult;phase:'development'|'validation';fees:number;slippage:number;data:Sample[];symbol:string}
 export default function DemoApp() {
-  const [spec,setSpec]=useState<DemoSpec>(()=>readLocal(DEMO_DRAFT,{...defaultSpec,name:'Buy below the recent average',kind:'sma_reversion',window:16,max_order:5,position_limit:20},validateDraft))
-  const [selected,setSelected]=useState('AAPL'),[period,setPeriod]=useState<'3m'|'6m'|'all'>('all')
+  const [spec,setSpec]=useState<DemoSpec>(()=>({...defaultDemoRule}))
+  const [savedDraft,setSavedDraft]=useState<DemoSpec|null>(()=>readLocal<DemoSpec|null>(DEMO_DRAFT,null,validateDraft))
+  const [selected,setSelected]=useState(defaultDemoStock),[period,setPeriod]=useState<'3m'|'6m'|'all'>('all')
   const [custom,setCustom]=useState<ReplayData|null>(null)
   const [speed,setSpeed]=useState(10),[fees,setFees]=useState(1),[slippage,setSlippage]=useState(2)
   const [rows,setRows]=useState<Telemetry[]>([]),[status,setStatus]=useState<'idle'|'playing'|'paused'|'completed'|'killed'|'error'>('idle')
   const [elapsed,setElapsed]=useState(0),[error,setError]=useState(''),[saved,setSaved]=useState('')
   const [phase,setPhase]=useState<'development'|'validation'>('development'),[experiment,setExperiment]=useState<Experiment|null>(null)
-  const [guide,setGuide]=useState(()=>readLocal('signum.public.guide.replay-v3',true,v=>v!==true))
+  const [guide,setGuide]=useState(()=>readLocal('signum.public.guide.replay-v4',true,v=>v!==true))
   const current=useRef<Runtime|null>(null)
   const data=selected==='imported'&&custom?custom:datasets.find(item=>item.id===selected)??datasets[0]
   const samples=selectPeriod(data,period),locked=status!=='idle',playing=status==='playing',latest=rows.at(-1),paper=latest?.paper
   const fills=rows.filter(row=>row.paper?.filled_order),equity=paper?.equity??10000,pnl=paper?.total_pnl??0
-  useEffect(()=>{setSaved(writeLocal(DEMO_DRAFT,spec)?'Rule saved on this device':'Storage is unavailable. Export your rule to keep it.')},[spec])
-  function dismiss(){setGuide(false);writeLocal('signum.public.guide.replay-v3',true)}
+  useEffect(()=>{
+    if(JSON.stringify(spec)===JSON.stringify(defaultDemoRule)){setSaved('Default example loaded');return}
+    if(writeLocal(DEMO_DRAFT,spec)){setSaved('Custom rule saved on this device');setSavedDraft({...spec})}
+    else setSaved('Storage is unavailable. Export your rule to keep it.')
+  },[spec])
+  function dismiss(){setGuide(false);writeLocal('signum.public.guide.replay-v4',true)}
   function reset(){if(current.current)current.current.active=false;current.current=null;setStatus('idle');setRows([]);setElapsed(0);setError('')}
   function pause(){const run=current.current;if(!run)return;run.elapsed+=performance.now()-run.activeSince;run.active=false;setElapsed(run.elapsed);setStatus('paused')}
   function play(){
@@ -95,6 +101,7 @@ export default function DemoApp() {
         <dl className="account-details"><div><dt>Cash left</dt><dd>{dollars(paper?.cash??10000)}</dd></div><div><dt>Shares owned</dt><dd>{paper?.position??0} <small>{data.symbol}</small></dd></div><div><dt>Shares worth</dt><dd>{dollars(paper?.market_value??0)}</dd></div><div><dt>Profit on sold shares</dt><dd>{dollars(paper?.realized_pnl??0)}</dd></div><div><dt>Profit on held shares</dt><dd>{dollars(paper?.unrealized_pnl??0)}</dd></div><div><dt>Trading fees paid</dt><dd>{dollars(paper?.fees??0)}</dd></div></dl><div className="account-trades"><b>{paper?.fill_count??0}</b><span>completed buys & sells</span></div><p className="account-note">Past results, even good ones, do not predict future profit.</p>
       </aside></div>
       <div className="replay-lower"><section className="card rule-card" id="rules"><header className="card-heading"><h2>Your trading rule<InfoTip label="trading rule">A rule tells the bot when to request a buy or sell. These two rules buy below a reference price and sell above it. They do not learn or predict prices.</InfoTip></h2><span className="subtle-text">{saved}</span></header>
+        <p className="small-note">Refresh loads the SMA16 example with Nvidia’s 2017 history. This example was selected after reviewing its results, not tested on an unseen year.</p><div className="saved-rule-actions"><button className="quiet-button" disabled={locked} onClick={()=>setSpec({...defaultDemoRule})}>Load default rule</button><button className="quiet-button" disabled={locked||!savedDraft} onClick={()=>{if(savedDraft)setSpec({...savedDraft})}}>Restore saved custom rule</button></div>
         <fieldset disabled={locked} className="rule-fields"><label>When should the bot buy?<select value={spec.kind} onChange={e=>setSpec({...spec,kind:e.target.value as DemoSpec['kind']})}><option value="anchor">When price drops below its starting price</option><option value="sma_reversion">When price drops below its recent average</option></select></label><div className="rule-numbers"><label>Price gap (basis points)<InfoTip label="price gap">One basis point is 0.01% of the starting price. A gap of 5 means about 5 cents when a stock starts at $100. Smaller gaps usually trigger more signals.</InfoTip><input aria-label="Price gap in basis points" type="number" min={1} max={500} value={spec.threshold_ticks} onChange={e=>setSpec({...spec,threshold_ticks:+e.target.value})}/></label>{spec.kind==='sma_reversion'&&<label>Prices in the average<input type="number" min={2} max={500} value={spec.window} onChange={e=>setSpec({...spec,window:+e.target.value})}/></label>}<label>Shares per order<input type="number" min={1} max={20} value={spec.max_order} onChange={e=>setSpec({...spec,max_order:+e.target.value})}/></label><label>Maximum shares held<input type="number" min={1} max={100} value={spec.position_limit} onChange={e=>setSpec({...spec,position_limit:+e.target.value})}/></label></div></fieldset>
         <div className="rule-explanation"><span><i className="buy-key"/>BUY</span><p>At least {(spec.threshold_ticks/100).toFixed(2)}% of the starting price below {spec.kind==='anchor'?'the starting price':`the previous ${spec.window}-price average`}.</p><span><i className="sell-key"/>SELL</span><p>The same gap above that reference. Otherwise, wait.</p></div>
         {spec.kind==='sma_reversion'&&<p className="small-note">The first {spec.window} samples build the average. The bot waits during this warmup.</p>}

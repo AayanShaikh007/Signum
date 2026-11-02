@@ -3,6 +3,7 @@ import parity from './demoParity.json'
 import { backtest, defaultSpec, DemoEngine, DemoLedger, DemoRun, generator, parseCsv, syntheticReplay, validateDraft, validateSpec } from './demoEngine'
 import { readLocal, writeLocal } from './demoStorage'
 import { datasets, marketDate, playbackTime, replaySpeedText, selectPeriod } from './replayData'
+import { defaultDemoRule, defaultDemoStock } from './demoDefaults'
 
 describe('browser simulator matches existing Python rules and ledger',()=>{
   for(const fixture of parity)it(`${fixture.spec.kind}, threshold ${fixture.spec.threshold_ticks}, cap ${fixture.spec.max_order}`,()=>{
@@ -60,6 +61,19 @@ describe('browser simulator matches existing Python rules and ledger',()=>{
   })
 })
 describe('replay, research and persistence',()=>{
+  it('reproduces the curated default example without mutating its preset',()=>{
+    const data=datasets.find(item=>item.id===defaultDemoStock)!
+    const spec=validateSpec({...defaultDemoRule})
+    const run=new DemoRun(spec,1,'default','historical',{nextSampleFills:true,slippageBps:2})
+    let last=run.tick(data.rows[0])
+    for(const sample of data.rows.slice(1))last=run.tick(sample)
+    expect(data.symbol).toBe('NVDA')
+    expect(last.paper?.equity).toBe(11839.87)
+    expect(last.paper?.fill_count).toBe(54)
+    expect(Object.isFrozen(defaultDemoRule)).toBe(true)
+    spec.window=32
+    expect(defaultDemoRule.window).toBe(16)
+  })
   it('bundles dated real histories separately from synthetic practice and labels speed honestly',()=>{
     const real=datasets.filter(d=>d.kind==='historical')
     expect(real.map(d=>d.symbol)).toEqual(['AAPL','NVDA','MSFT'])
