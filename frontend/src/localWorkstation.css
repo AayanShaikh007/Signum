@@ -1,0 +1,68 @@
+/* Personal workstation shares the public replay's typography and navy palette,
+   while preserving the real backend/serial/broker controls and safety gates. */
+.local-workstation {background:#0c111b;display:block;color:#dce4ef}
+.local-workstation .main-shell {width:100%;min-width:0}
+.local-workstation main {max-width:1504px;padding:32px}
+.local-workstation .replay-nav {flex-wrap:wrap;row-gap:14px}
+.local-workstation .replay-nav nav {flex-wrap:wrap;gap:18px}
+.local-workstation .page-heading {align-items:flex-start;gap:24px}
+.local-workstation .page-heading h1 {font-size:28px;line-height:1.35;letter-spacing:-.7px}
+.local-workstation .page-heading p {font-size:13px;line-height:1.8;color:#94a1b3;max-width:750px}
+.local-workstation .eyebrow {display:block;letter-spacing:1.4px;color:#8193ab;line-height:1.6}
+.local-workstation .panel,.local-workstation .control-bar,.local-workstation .metric-card {background:#111925;border-color:#273243;border-radius:10px}
+.local-workstation .metric-card {min-width:0;padding:20px}
+.local-workstation .metric-label {font-size:12px;line-height:1.6}
+.local-workstation .metric-value {font-size:29px;line-height:1.2}
+.local-workstation .metric-foot {font-size:11px;line-height:1.7;flex-wrap:wrap}
+.local-workstation .button {min-height:40px;font-size:12px;border-radius:6px}
+.local-workstation .button.primary {background:#b8daf5;border-color:#b8daf5;color:#12293b}
+.local-workstation .button.secondary {background:#101a28;border-color:#344357;color:#bfccdc}
+.local-workstation .mode-switch {background:#0b131f;border-color:#2b394d}
+.local-workstation .mode-switch button {font-size:12px;min-height:36px}
+.local-workstation .mode-switch button.selected {background:#2b4058;color:#d6e8f7}
+.local-workstation .control-bar {padding:14px;gap:16px}
+.local-workstation .control-bar .data-source {font-size:11px}
+.local-workstation .speed-label {font-size:12px}
+.local-workstation .speed-label span {width:38px}
+.local-workstation .notice {background:#152132;border-color:#2e4057;color:#aec5db;font-size:12px;line-height:1.8;flex-wrap:wrap}
+.local-workstation .notice > span {min-width:0;overflow-wrap:anywhere}
+.local-workstation .notice.warning {background:#292219;border-color:#51422c;color:#e6c58c}
+.local-workstation .notice.error {background:#2a181c;border-color:#603039;color:#f5b4bc}
+.local-workstation .source-panel {padding:20px 24px}
+.local-workstation .source-heading {margin-bottom:18px;align-items:center}
+.local-workstation .source-heading > span:first-child {font-size:14px}
+.local-workstation .source-fields,.local-workstation .download-controls {gap:16px 20px}
+.local-workstation .source-fields label,.local-workstation .download-controls label {font-size:12px;line-height:1.6}
+.local-workstation .source-fields input:not([type=checkbox]),.local-workstation .source-fields select,.local-workstation .download-controls input,.local-workstation .download-controls select {font-size:12px;line-height:1.5;min-height:40px;background:#0d1622;border-color:#344357}
+.local-workstation input[type=checkbox] {width:16px;height:16px;min-height:0;flex-shrink:0;accent-color:#9bc9ee}
+.local-workstation .reset-check {display:flex;align-items:flex-start;gap:8px;line-height:1.8}
+.local-workstation .hardware-controls {font-size:12px;line-height:1.8;background:#152132;border-color:#34475b;gap:16px}
+.local-workstation .hardware-controls label {flex-wrap:wrap}
+.local-workstation .panel-heading h2 {font-size:14px;line-height:1.6}
+.local-workstation .panel-heading p,.local-workstation .source-note {font-size:12px;line-height:1.8;color:#8da1ba}
+.local-workstation .chart-layout {grid-template-columns:minmax(0,1fr) 320px;gap:24px}
+.local-workstation .chart-container {height:320px}
+.local-workstation .engine-emblem > div {font-size:14px}
+.local-workstation .engine-emblem > div > span:first-child {font-size:11px;line-height:1.6}
+.local-workstation .engine-badge {font-size:10px}
+.local-workstation .engine-details > div,.local-workstation .risk-header {font-size:12px;gap:12px}
+.local-workstation .engine-details dd {text-align:right;overflow-wrap:anywhere}
+.local-workstation .engine-estimate {font-size:11px;line-height:1.8;background:#17293a;color:#aac5dd}
+.local-workstation .engine-estimate small {font-size:10px;line-height:1.7;color:#859fb8}
+.local-workstation .kill-button {font-size:12px;line-height:1.6;flex-wrap:wrap}
+.local-workstation .kill-note {font-size:11px;line-height:1.7}
+.local-workstation .strategy-fields label {font-size:12px;line-height:1.6}
+.local-workstation .strategy-fields input,.local-workstation .strategy-fields textarea {font-size:13px;background:#0d1622;border-color:#344357;line-height:1.6}
+.local-workstation .strategy-file {background:#142031;border-color:#2f4259;color:#c3d4e7;line-height:1.7}
+.local-workstation .strategy-file.selected {background:#20354c;border-color:#82add0}
+.local-workstation .strategy-file small {color:#8ca8c4;font-size:11px}
+.local-workstation .strategy-layout {gap:24px}
+.local-workstation .paper-summary strong {font-size:28px}
+.local-workstation th {font-size:11px;background:#0e1623;padding:14px 16px}
+.local-workstation td {font-size:12px;padding:14px 16px}
+.local-workstation .history-footer,.local-workstation .page-footer {font-size:11px;line-height:1.8;flex-wrap:wrap}
+.local-workstation .page-footer > span:last-child {font-size:10px;letter-spacing:.5px}
+.local-workstation .signal {font-size:10px;padding:5px 8px}
+@media(max-width:1200px){.local-workstation .chart-layout{grid-template-columns:minmax(0,1fr) 285px}.local-workstation .metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.local-workstation .replay-nav nav{gap:12px}}
+@media(max-width:900px){.local-workstation .chart-layout{grid-template-columns:1fr}.local-workstation .engine-panel{display:block}.local-workstation .engine-panel .panel-heading{padding-bottom:0}.local-workstation .engine-details{margin-top:18px}.local-workstation .engine-emblem{margin-top:20px}}
+@media(max-width:600px){.local-workstation main{padding:24px 16px}.local-workstation .replay-nav{padding:18px 16px}.local-workstation .replay-brand small{display:none}.local-workstation .replay-nav nav{width:100%;justify-content:space-between;gap:8px}.local-workstation .replay-nav nav > a{font-size:11px}.local-workstation .connection{font-size:10px}.local-workstation .replay-nav .button{font-size:11px;padding:6px 8px;min-height:34px}.local-workstation .page-heading{flex-direction:column;gap:16px}.local-workstation .page-heading .button{font-size:12px;gap:8px}.local-workstation .page-heading h1{font-size:25px}.local-workstation .metric-card{padding:16px}.local-workstation .metric-value{font-size:25px}.local-workstation .source-panel{padding:18px}.local-workstation .source-heading>.pill{font-size:10px;white-space:normal}.local-workstation .chart-container{height:260px}.local-workstation .hardware-controls{font-size:12px;padding:14px}.local-workstation .hardware-controls select{max-width:100%}.local-workstation .history-footer>span{flex-wrap:wrap}.local-workstation .page-footer>span{display:block}}

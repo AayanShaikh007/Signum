@@ -1,5 +1,5 @@
 // Update these steps and bump the version whenever a user-facing workflow changes.
-export const GUIDE_VERSION = 'ui-clarity-v6'
+export const GUIDE_VERSION = 'local-workspace-v7'
 const STORAGE_KEY = 'nanoquant.guide.dismissed-version'
 
 export const guideSteps = [
@@ -31,5 +31,5 @@ export const publicGuideSteps = [
   {tag:'01 / SPEED UP TIME',title:'A year of prices in seconds.',body:'Each stock sample is one trading day. At 1×, one day plays each second. At 10×, ten trading days play each second. Pause, resume, or change speed while watching.',tip:'The chart shows the date being replayed and the actual playback time separately. Practice mode uses fictional prices, not a real stock.',visual:['Past market date','1× to 50×','Your playback time']},
   {tag:'02 / CHANGE A RULE',title:'Buy a dip. Sell a rise.',body:'Choose a starting-price reference or a recent average. Set the price gap, shares per order and holding limit. Reset before changing an active replay’s settings.',tip:'An average needs its first N samples to warm up. A price can keep falling after a buy. A rule is not a prediction or a guarantee.',visual:['Reference price','Price gap','Share limits']},
   {tag:'03 / FOLLOW THE MONEY',title:'See what actually filled.',body:'The portfolio shows cash, shares and profit or loss. Markers and trade history show completed simulated fills. A signal fills on the following sample with fees and slippage.',tip:'The bot can only buy with available cash and sell shares it owns. Use the small ⓘ buttons for short explanations; hover, focus with the keyboard, or tap.',visual:['Cash + shares','Completed trades','Costs included']},
-  {tag:'04 / EXPLORE FURTHER',title:'Test an idea. Keep your work.',body:'Use the first 70% of prices to develop a rule, then test it on the later 30% without tuning against that result. Rules autosave on this device; import or export JSON for backups.',tip:'The local GitHub project adds Verilog and a Tang Nano 9K FPGA. This website runs in JavaScript. Historical prices are sample data, not current quotes or a total-return series.',visual:['Test a period','Save your rule','Explore the FPGA']},
+  {tag:'04 / EXPLORE FURTHER',title:'Test an idea. Keep your work.',body:'Use the first 70% of prices to develop a rule, then test it on the later 30% without tuning against that result. Custom rules autosave on this device. Refresh loads the default Nvidia/SMA16 example; use Restore saved custom rule to recover edits, or export JSON for backups.',tip:'The local GitHub project adds Verilog and a Tang Nano 9K FPGA. This website runs in JavaScript. Historical prices are sample data, not current quotes or a total-return series.',visual:['Test a period','Save your rule','Explore the FPGA']},
 ]
