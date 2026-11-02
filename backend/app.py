@@ -11,6 +11,7 @@ from .provider import MarketDataError, provider_status
 from .replay import DownloadRequest, download_dataset, list_datasets
 from .broker import AlpacaPaper, BrokerError
 from .research_api import research_router
+from .assistant import assistant_router
 from starlette.responses import JSONResponse
 
 ORIGINS = {'http://localhost:5173', 'http://127.0.0.1:5173'}
@@ -29,6 +30,7 @@ def create_app():
     app = FastAPI(title='Signum local telemetry', lifespan=lifespan)
     app.state.controller = controller
     app.include_router(research_router())
+    app.include_router(assistant_router())
 
     @app.middleware('http')
     async def guard_research_origin(request:Request,call_next):

@@ -936,3 +936,29 @@ from this session.
 - This validates model authentication, not web research, citations or the complete
   strategy assistant. No hardware commands or broker orders sent. Grounded research
   and assistant UI/backend implementation remain next steps.
+
+### 2026-11-02 — Implement bounded Azure research drafting backend
+
+- Resumed authorized AI feature implementation. Reused Strategy validation,
+  StrategyStore atomic local storage, existing httpx/dotenv dependencies, and
+  existing freeze/backtest APIs. Consulted Microsoft structured-output docs and
+  Crossref REST documentation before implementation.
+- Added local assistant status/draft API: Crossref retrieves four scholarly
+  records with metadata/available abstract excerpts, Azure GPT drafts strict JSON,
+  backend validates settings/citation IDs and persists provenance under ignored
+  research/ai_drafts. Unknown citations, invalid output, timeout/refusal/truncation
+  fail without applying settings or retrying. One in-flight request and ten
+  requests/hour per process; restart resets this development limit.
+- Supported rules remain anchor/SMA reversion; AI classifies unsupported ideas.
+  Schema validity and citation identity are checked, not scientific truth or
+  semantic correctness. No arbitrary code, broker or hardware execution tools.
+- Live research smoke request succeeded: four retrieved sources, two cited
+  records, supported SMA candidate; saved ID 65d8856235504b93bdbafebe1668e55f.
+  This is actual cloud API validation, not measured FPGA performance or evidence
+  that the strategy works. No hardware commands or broker orders were sent.
+- Eight new mocked/integration tests cover mapping, unknown citations, invalid
+  settings, timeout/no retry, unsupported/truncated output, persisted provenance,
+  rate/config/errors and existing save/freeze/backtest integration. Full pytest:
+  90 passed, 11 skipped (optional RTL simulator checks unavailable), one existing
+  Starlette/httpx deprecation warning. Initial async tests failed because
+  pytest-asyncio is absent; converted to asyncio.run wrappers without adding deps.
