@@ -836,3 +836,34 @@ from this session.
   final demo build checked. Local build already passed. No hardware/broker actions.
 - Pushing final focused acceptance/usability commit and retaining main automatic
   production deployment. Browser no-console-error check and final state follow.
+
+### 2026-11-02 — Refresh default, historical illustration and personal workspace styling
+
+- User requested a fixed strategy after refresh, ideally 10% over the bundled
+  year, then asked to launch the personal FPGA app and apply the visual redesign
+  there too. Also discussed Azure Foundry strategy drafting briefly; no AI feature
+  implementation, Azure setup or new credentials authorized/attempted this task.
+- Evaluated existing SMA16, gap 5, fee 1 bps/slippage 2 bps with original hardware
+  risk caps order 20/position 100 on each full 2017 sample using Python reference:
+  NVDA $11839.87 (18.40%), AAPL $10193.70 (1.94%), MSFT $10967.85 (9.68%).
+  Selected NVDA as the curated demonstration after inspecting these results;
+  explicitly disclosed selection, not out-of-sample validation or guaranteed return.
+  No threshold/window parameter sweep or manipulation of prices/fills performed.
+- Added immutable default preset, always loaded at public refresh with NVDA/full
+  year. Initial defaults do not overwrite an existing custom draft. User can
+  explicitly restore saved custom rules or load default again. Added exact
+  deterministic full-year replay regression; all 21 frontend tests passed.
+- Applied shared navy/blue visual language, horizontal navigation, typography,
+  grouping, plain labels and contextual help to local workstation. Preserved
+  data/serial/Alpaca controls and ownership/reset/consent gates. Fixed static
+  risk/threshold labels to reflect configured strategy, and source/price labels.
+  Updated versioned guides and kept independent public/local build entries.
+- Public and personal production builds passed. Launched Vite 5173 and uvicorn
+  8000 in retained sessions; frontend HTTP 200 and backend idle with no owner.
+  Browser security policy saved permission denied localhost opening; did not
+  bypass through another browser or rendering mechanism. Local visual inspection
+  remains unavailable; user must open the local URL manually.
+- No FPGA packets, physical programming or paper broker orders submitted.
+  Personal site is running; board reset still required before actual FPGA runs.
+  Committing focused default/tests, personal UI and documentation/log changes,
+  then publishing public update through existing Vercel Git deployment.

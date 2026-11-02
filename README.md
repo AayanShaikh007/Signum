@@ -374,3 +374,18 @@ Historical samples come from Cam Nugent’s CC0 S&P 500 stock dataset, version 4
 not every trade, not current quotes, and not a total-return series. No private
 Alpaca downloads are published. Real hardware requires the local installation;
 this website makes no physical latency measurements.
+
+### Refresh default and saved custom rules
+
+Public refresh loads the curated **NVDA / full 2017 / SMA16** example: gap 5 bps,
+20-unit maximum order and 100-unit position cap, with fees 1 bps and slippage 2 bps.
+Its full-year replay ends at $11,839.87 (+18.40%) under these assumptions. This
+stock/example was selected after reviewing historical results, not validated on
+an unseen year. The same rule returned 1.94% on AAPL and 9.68% on MSFT samples;
+no future return is implied. Optional first-70%/last-30% tests are different periods.
+
+Custom draft autosave remains available. Refresh loads the example without
+replacing that saved draft; choose **Restore saved custom rule** to recover it.
+The local personal workstation shares the navy visual language, with its actual
+Python/FPGA/Alpaca controls retained. Public defaults never automatically configure
+or start physical hardware.
