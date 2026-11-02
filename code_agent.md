@@ -867,3 +867,14 @@ from this session.
   Personal site is running; board reset still required before actual FPGA runs.
   Committing focused default/tests, personal UI and documentation/log changes,
   then publishing public update through existing Vercel Git deployment.
+
+### 2026-11-02 — Default refresh production acceptance
+
+- Production deployment dpl_EsL4WrfK4riaBaeypfoDAnLWuogh reached READY from ee39467.
+  Public browser verified NVDA/full year, SMA16/gap5/order20/limit100 on load.
+  Restored an existing saved rule (order3), refreshed, and verified default order20
+  returned while the custom rule remained recoverable. Full 251-sample run at
+  50x ended at $11839.87, +18.40%, 54 completed fills, matching regression/reference.
+- Personal frontend/backend remain running at ports 5173/8000, with no active
+  backend run. Local visual verification stayed blocked by saved browser policy;
+  public browser verification did not grant or bypass access to localhost.
