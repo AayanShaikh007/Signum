@@ -878,3 +878,61 @@ from this session.
 - Personal frontend/backend remain running at ports 5173/8000, with no active
   backend run. Local visual verification stayed blocked by saved browser policy;
   public browser verification did not grant or bypass access to localhost.
+
+### 2026-11-02 — Discuss AI-assisted strategy research
+
+- User requested elaboration only. Checked Microsoft Foundry web/Bing grounding
+  documentation and original backtest-overfitting research. Recommended bounded
+  hypothesis-to-cited-research-to-supported-settings workflow, validated JSON,
+  saved provenance, undo, deterministic tests and separate later validation.
+- Explained current anchor/SMA template boundary, unsupported new algorithms,
+  academic evidence versus AI-guessed parameters, retrospective default example,
+  limited historical coverage and model knowledge/look-ahead contamination.
+- Proposed local-first Foundry integration before public server-side endpoints,
+  with usage limits if exposed publicly. No Azure provisioning, credentials,
+  implementation, broker orders, hardware commands, tests, commit or push.
+
+### 2026-11-02 — Collect Azure Foundry prerequisites for research assistant
+
+- User authorized feature direction and asked first for required Foundry values
+  and how to locate them. Checked current Microsoft setup, model endpoint and
+  web-search documentation; inspected dependency list and env example only.
+  Did not read actual env secrets, provision Azure resources or start AI calls.
+- Recommended local Python backend, project endpoint/model deployment, Entra
+  authentication via Azure CLI, and direct agent web search with citations.
+  Current general web search does not require a separate Bing resource/connection;
+  distinguish classic setups rather than asking for unnecessary services.
+- Requested nonsecret project endpoint, deployed model name/model, region,
+  existing web-search availability and desired usage budget. Provided portal
+  navigation and keyless login path; no API keys/client secrets requested in chat.
+- Planning/setup guidance only. Implementation pending project/model details;
+  no source changes, tests, commit or push in this turn.
+
+### 2026-11-02 — Inspect open Azure webpage for AI setup
+
+- User requested computer control to inspect the already-open Azure page.
+  Used computer-use skill and Edge browser UI, navigating the existing resource
+  into Foundry Models + endpoints and the existing GPT deployment details.
+- Verified resource aayan-graphrag-openai, AIServices kind, East US 2 region,
+  Azure for Students subscription, and two successful deployments: gpt-4o
+  (model version 2024-11-20, Standard) and embeddings (text-embedding-3-small).
+  Verified the GPT endpoint host aayan-graphrag-openai.cognitiveservices.azure.com.
+- No resources, permissions, deployments or credentials changed. No keys copied
+  or saved to repository files. No inference calls, hardware commands or orders.
+- Existing model can support the drafting integration; project endpoint,
+  keyless access and grounded web-search capability remain unverified.
+  Read-only inspection only; no source changes or tests required.
+
+### 2026-11-02 — Configure and verify Azure model credentials
+
+- User supplied Azure credentials and client settings for the planned assistant.
+  Saved settings only in ignored backend/.env, preserving existing Alpaca values;
+  added blank server-side configuration fields to backend/.env.example.
+- Verified git check-ignore identifies backend/.env. Sent one minimal chat
+  completion using existing httpx: HTTP 200, completion received, 13 total tokens.
+  No key or response headers printed; no credentials placed in tracked files.
+- Initial dependency-file inspection used a nonexistent requirements-dashboard.txt;
+  used the already-installed httpx/dotenv dependencies instead, with no install.
+- This validates model authentication, not web research, citations or the complete
+  strategy assistant. No hardware commands or broker orders sent. Grounded research
+  and assistant UI/backend implementation remain next steps.
