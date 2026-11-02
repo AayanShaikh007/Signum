@@ -66,3 +66,13 @@
 @media(max-width:1200px){.local-workstation .chart-layout{grid-template-columns:minmax(0,1fr) 285px}.local-workstation .metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.local-workstation .replay-nav nav{gap:12px}}
 @media(max-width:900px){.local-workstation .chart-layout{grid-template-columns:1fr}.local-workstation .engine-panel{display:block}.local-workstation .engine-panel .panel-heading{padding-bottom:0}.local-workstation .engine-details{margin-top:18px}.local-workstation .engine-emblem{margin-top:20px}}
 @media(max-width:600px){.local-workstation main{padding:24px 16px}.local-workstation .replay-nav{padding:18px 16px}.local-workstation .replay-brand small{display:none}.local-workstation .replay-nav nav{width:100%;justify-content:space-between;gap:8px}.local-workstation .replay-nav nav > a{font-size:11px}.local-workstation .connection{font-size:10px}.local-workstation .replay-nav .button{font-size:11px;padding:6px 8px;min-height:34px}.local-workstation .page-heading{flex-direction:column;gap:16px}.local-workstation .page-heading .button{font-size:12px;gap:8px}.local-workstation .page-heading h1{font-size:25px}.local-workstation .metric-card{padding:16px}.local-workstation .metric-value{font-size:25px}.local-workstation .source-panel{padding:18px}.local-workstation .source-heading>.pill{font-size:10px;white-space:normal}.local-workstation .chart-container{height:260px}.local-workstation .hardware-controls{font-size:12px;padding:14px}.local-workstation .hardware-controls select{max-width:100%}.local-workstation .history-footer>span{flex-wrap:wrap}.local-workstation .page-footer>span{display:block}}
+
+.ai-assistant { margin: 20px 0; padding: 20px; border: 1px solid #33445f; border-radius: 10px; background: #111c2b; overflow-wrap: anywhere; }
+.ai-assistant p, .ai-assistant li { font-size: 14px; line-height: 1.6; color: #c0cbdc; }
+.ai-assistant small { display: block; margin: 8px 0; color: #9caec7; }
+.ai-assistant h3, .ai-assistant h4 { margin: 12px 0; }
+.ai-source { padding: 12px 0; border-bottom: 1px solid #33445f; }
+.ai-source a { color: #85baff; }
+.ai-source summary { cursor: pointer; color: #b4c9e8; }
+.ai-settings { display: grid; grid-template-columns: minmax(100px,1fr) minmax(0,2fr); gap: 8px; font-size: 14px; }
+.ai-settings dd { margin: 0; }

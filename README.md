@@ -389,3 +389,42 @@ replacing that saved draft; choose **Restore saved custom rule** to recover it.
 The local personal workstation shares the navy visual language, with its actual
 Python/FPGA/Alpaca controls retained. Public defaults never automatically configure
 or start physical hardware.
+
+## AI strategy research (local app)
+
+In **Strategies**, write a hypothesis (15–2,000 characters) and wait for the
+editor to save. Select **Research & draft settings**, review the source records,
+limitations and proposed values, then **Apply to editor** or **Save candidate &
+backtest**. The latter creates a new strategy file, freezes it and runs the selected
+dataset/phase with the selected fees and slippage. It never starts paper orders
+or FPGA communication. **Undo AI settings** restores the previous editor values;
+existing saved files and experiments remain available. Export research JSON to
+keep the draft, source records and model deployment together.
+
+Configure these values in ignored `backend/.env` and restart the backend:
+
+```dotenv
+AZURE_OPENAI_ENDPOINT=https://YOUR-RESOURCE.cognitiveservices.azure.com/
+AZURE_OPENAI_API_VERSION=2024-12-01-preview
+AZURE_OPENAI_DEPLOYMENT=YOUR-DEPLOYMENT-NAME
+AZURE_OPENAI_API_KEY=YOUR-LOCAL-KEY
+```
+
+No new dependencies are required. Use the normal backend/frontend startup commands
+above. Azure calls run server-side only. The public Vercel demo does not include
+this feature or access these credentials. Keep the backend bound to localhost.
+
+The hypothesis goes to Crossref search and Azure. Crossref provides bibliographic
+metadata and sometimes abstract excerpts; this is **not full-paper review, live
+web browsing, or market-data analysis**. The UI shows what was retrieved and
+permits only citations to those records. Relevance, interpretations and proposed
+parameters still need human review. Parameters are untested guesses, not proven
+by citations. Only anchor and SMA reversion templates are supported; ideas needing
+other rules are flagged rather than deployed. Research records save under ignored
+`backend/data/research/ai_drafts/`. A process-local limit allows ten requests/hour,
+one at a time, with bounded input/output and no automatic retry. Restarting the
+backend resets the limit; it is not a cloud spending cap or public API protection.
+
+Develop on the first 70%, freeze the rule, evaluate the later 30% separately, then
+observe live paper results. Model training knowledge and repeated testing can
+contaminate historical evaluation. No profitability is promised.

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Replay } from './types'
+import StrategyAssistant from './StrategyAssistant'
 interface Spec { schema_version:1; name:string; hypothesis:string; kind:'anchor'|'sma_reversion';threshold_ticks:number;window:number;max_order:number;position_limit:number }
 interface Saved { id:string; revision:number; spec:Spec; fpga_supported:boolean }
 interface Frozen extends Saved { sha256:string }
@@ -17,6 +18,7 @@ export default function StrategyWorkspace({onUse,activeSnapshot,running}:{onUse:
   const [library,setLibrary]=useState<Saved[]>([])
   const [record,setRecord]=useState<Saved|null>(null)
   const [spec,setSpec]=useState<Spec>({...EMPTY})
+  const [beforeAI,setBeforeAI]=useState<Spec|null>(null)
   const [dirty,setDirty]=useState(false)
   const [saving,setSaving]=useState(false)
   const [blocked,setBlocked]=useState(false)
@@ -83,6 +85,19 @@ export default function StrategyWorkspace({onUse,activeSnapshot,running}:{onUse:
     try{const value:Result=await api('backtests',{snapshot_id:snapshot.id,dataset_id:dataset,phase,fee_bps:fees,slippage_bps:slippage});setResult(value);setHistory(old=>[value,...old])}
     catch(e){setError(String(e))}finally{setBusy(false)}
   }
+  async function testCandidate(candidate:Spec) {
+    if(lock.current||busy||running||dirty)return
+    lock.current=true;setBusy(true);setError('');setBeforeAI({...spec})
+    try {
+      const saved:Saved=await api('strategies',{spec:candidate,expected_revision:0})
+      const frozen:Frozen=await api(`strategies/${saved.id}/freeze`,{expected_revision:saved.revision})
+      epoch.current++;setRecord(saved);setSpec(saved.spec);setDirty(false);setSnapshot(frozen)
+      setLibrary(old=>[saved,...old]);setMessage('AI candidate saved as a new file and frozen for this test.')
+      const value:Result=await api('backtests',{snapshot_id:frozen.id,dataset_id:dataset,phase,fee_bps:fees,slippage_bps:slippage})
+      setResult(value);setHistory(old=>[value,...old])
+    }catch(e){setError(e instanceof Error?e.message:'Candidate backtest failed')}
+    finally{lock.current=false;setBusy(false)}
+  }
   function exportSpec() {
     const url=URL.createObjectURL(new Blob([JSON.stringify(spec,null,2)],{type:'application/json'}))
     const a=document.createElement('a');a.href=url;a.download=`${spec.name.replace(/[^a-z0-9_-]/gi,'_')}.strategy.json`;a.click();URL.revokeObjectURL(url)
@@ -107,6 +122,8 @@ export default function StrategyWorkspace({onUse,activeSnapshot,running}:{onUse:
     <p className="source-note">FPGA: anchor rules or SMA windows 2, 4, 8, 16, 32, 64. Flash configurable firmware once; settings upload before each run and lock until S2 reset.</p><div className="strategy-layout"><aside><div className="strategy-tools"><button className="button secondary" disabled={saving||busy} onClick={()=>open(null)}>New strategy</button><label className="button secondary">Import JSON<input aria-label="Import strategy JSON" type="file" accept=".json" hidden disabled={saving||busy} onChange={e=>void importSpec(e.target.files?.[0])}/></label></div>{library.map(file=><button key={file.id} className={`strategy-file ${record?.id===file.id?'selected':''}`} disabled={saving||busy} onClick={()=>open(file)}><strong>{file.spec.name}</strong><small>r{file.revision} · {file.fpga_supported?'FPGA configurable':'Python only'}</small></button>)}{!library.length&&<p className="source-note">FPGA supports fixed-anchor rules and SMA windows 2, 4, 8, 16, 32, 64. Requires updated firmware. Your saved strategy files will appear here.</p>}</aside>
     <div className="strategy-editor">{recovery&&<div className="notice warning">An unsaved recovery draft is available.<button className="button secondary" disabled={saving||busy} onClick={()=>{epoch.current++;setRecord(recovery.record);setSpec(recovery.spec);setDirty(true);setBlocked(true);setSnapshot(null);setMessage('Recovery loaded. Save a copy if the server revision changed.')}}>Recover draft</button></div>}
     <fieldset disabled={busy} className="strategy-fields"><label>Name<input maxLength={100} value={spec.name} onChange={e=>edit({name:e.target.value})}/></label><label>Hypothesis: why should this rule work?<textarea rows={3} maxLength={5000} value={spec.hypothesis} onChange={e=>edit({hypothesis:e.target.value})} placeholder="Describe the idea before testing it…"/></label><div className="source-fields"><label>Rule template<select value={spec.kind} onChange={e=>edit({kind:e.target.value as Spec['kind']})}><option value="anchor">Fixed-anchor reversion</option><option value="sma_reversion">Moving-average reversion</option></select></label><label>Threshold (normalized ticks)<input type="number" min={1} max={500} value={spec.threshold_ticks} onChange={e=>edit({threshold_ticks:Number(e.target.value)})}/></label>{spec.kind==='sma_reversion'&&<label>Prior-sample average window<input type="number" min={2} max={500} value={spec.window} onChange={e=>edit({window:Number(e.target.value)})}/></label>}<label>Max order<input type="number" min={1} max={20} value={spec.max_order} onChange={e=>edit({max_order:Number(e.target.value)})}/></label><label>Position limit<input type="number" min={1} max={100} value={spec.position_limit} onChange={e=>edit({position_limit:Number(e.target.value)})}/></label></div></fieldset>
+    <StrategyAssistant hypothesis={spec.hypothesis} disabled={running||busy||saving||dirty} onApply={candidate=>{setBeforeAI({...spec});edit(candidate)}} onTest={testCandidate}/>
+    {beforeAI&&<button className="button secondary" disabled={busy||saving||running} onClick={()=>{edit(beforeAI);setBeforeAI(null)}}>Undo AI settings</button>}
     <div className="strategy-tools"><span role="status" className="source-note">{saving?'Saving to disk…':message}</span><button className="button secondary" disabled={saving||busy} onClick={()=>void save()}>Save now</button><button className="button secondary" disabled={saving||busy} onClick={()=>void save(true)}>Save a copy</button><button className="button secondary" onClick={exportSpec}>Export .strategy.json</button><button className="button primary" disabled={!record||dirty||saving||busy} onClick={()=>void freeze()}>Freeze version</button></div>
     {record&&<div className="strategy-tools"><button className="guide-skip" disabled={busy||saving||dirty} onClick={()=>void api(`strategies/${record.id}/backups`).then(setBackups).catch(e=>setError(String(e)))}>Show saved revision backups</button>{backups.map(item=><button key={item.revision} className="pill subtle" disabled={busy||saving||dirty} onClick={()=>void restore(item)}>Restore r{item.revision}</button>)}</div>}
     {snapshot&&<div className="notice"><span>Frozen: {snapshot.spec.name} · r{snapshot.revision}<small className="dataset-hash">{snapshot.sha256}</small></span><button className="button secondary" disabled={running} onClick={()=>onUse(snapshot.id,snapshot.spec.name,snapshot.fpga_supported)}>Use for next paper run</button></div>}

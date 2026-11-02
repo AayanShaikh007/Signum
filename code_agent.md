@@ -962,3 +962,26 @@ from this session.
   90 passed, 11 skipped (optional RTL simulator checks unavailable), one existing
   Starlette/httpx deprecation warning. Initial async tests failed because
   pytest-asyncio is absent; converted to asyncio.run wrappers without adding deps.
+
+### 2026-11-02 — Add local research assistant editor workflow
+
+- Added research card beside hypothesis editing: explicit data-sharing text,
+  source links/coverage/excerpts, evidence limitations, proposed settings, risks,
+  Apply to editor, Undo AI settings and research JSON export. Stale hypotheses
+  cannot apply older drafts; controls disable while saving/testing/running.
+- Added Save candidate & backtest: saves a separate strategy file, freezes the
+  candidate and uses existing selected dataset/phase/fee/slippage controls. No
+  automatic paper run, FPGA upload or broker order. Existing autosave/backups and
+  onboarding close/reopen controls retained. Guide bumped to local-workspace-v8;
+  README documents setup, workflow, limits and process-local usage cap.
+- Frontend: 21 tests passed; local and public builds passed. Public bundle scan
+  finds neither assistant API route nor Azure key. Backend idle/owner None before
+  restart; restarted verified local uvicorn process with new routes. Assistant
+  status HTTP 200/configured, frontend HTTP 200. Vite remains on port 5173.
+- Browser visual inspection remains unavailable under the saved localhost browser
+  policy; no bypass attempted. Visual layout is build-checked, not browser-verified.
+- A text edit initially hit Windows default encoding on onboardingContent.ts;
+  reran that edit with explicit UTF-8. No dependencies, RTL or constraints changed.
+- Remaining limits: local app only, metadata/abstract research rather than full
+  paper review or Foundry web search; scientific interpretation needs review;
+  model-generated settings have not been judged profitable or tested on FPGA.
