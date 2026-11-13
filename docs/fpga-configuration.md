@@ -91,7 +91,7 @@ Final post-route estimate: **30.16 MHz**, passing 27 MHz. Utilization: 2,179/8,6
 LUT4 (25%), 665/6,480 DFF (10%), one block RAM. Structural synthesis check reported
 zero problems; packing produced `build/signum.fs`. Tool-library/ABC informational
 warnings remain in the synthesis log. These are tool results, not physical
-measurements. Physical acceptance after programming remains outstanding.
+measurements. Physical acceptance after programming is recorded below.
 
 ### Physical acceptance (October 31, 2026)
 

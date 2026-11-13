@@ -1048,3 +1048,20 @@ from this session.
 - Verified image decoding and dimensions, 32 GIF frames and ~2.6 MB GIF size.
   Rechecked hero visually. Original videos, temporary files and PDF exports are
   excluded from staging. No new dependencies or application changes.
+
+### 2026-11-13 — Rewrite README as an illustrated project entry point
+
+- Reorganized README around project purpose, public/local comparison, photos,
+  architecture Mermaid diagram, strategy behavior, research features and dated
+  physical validation. Added clone-based PowerShell quickstart, integration links,
+  reset/serial instructions, development commands and repository map.
+- Replaced obsolete milestone/test counts, original-build resources and assertions
+  that physical acceptance remained pending with the recorded Oct 31 configurable
+  run. Distinguishes measured host RTT, architectural timing and tool estimates.
+  Corrected one stale pending-acceptance sentence in FPGA configuration guide.
+- Preserved detailed strategy/replay/AI instructions in docs/research-workflows.md,
+  including public default selection bias, CSV constraints and AI configuration.
+  No dashboard behavior changes, so onboarding version is unchanged.
+- Validated local Markdown links, heading targets, image files, code-fence balance
+  and git diff whitespace. Documentation-only task; app tests/hardware runs not
+  repeated. GitHub rendered-page inspection unavailable with browser access off.
