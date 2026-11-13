@@ -985,3 +985,66 @@ from this session.
 - Remaining limits: local app only, metadata/abstract research rather than full
   paper review or Foundry web search; scientific interpretation needs review;
   model-generated settings have not been judged profitable or tested on FPGA.
+
+### 2026-11-03 — Launch Signum and retain video reminder
+
+- User requested the local app and a reminder to make a visualization video.
+  LinkedIn release checklist reminder: create a polished visualization/demo video
+  showing data flowing through strategy decisions, FPGA processing and chart/
+  portfolio outcomes. Bring this up when preparing the LinkedIn release.
+  No date/time was specified; no scheduled notification was created.
+- Started local FastAPI backend on 127.0.0.1:8000 and Vite personal frontend on
+  127.0.0.1:5173. Verified both return HTTP 200; backend state idle.
+  Did not start trading, access serial hardware or send broker orders.
+
+### 2026-11-03 — Restart local Signum on request
+
+- User requested running the app. Neither service was listening; started local
+  uvicorn backend on port 8000 and Vite personal frontend on port 5173.
+- Verified frontend and backend HTTP 200; backend idle. No trading, serial
+  hardware commands or broker orders started. No source changes or tests needed.
+
+### 2026-11-12 — Prepare LinkedIn preview PDF and portfolio image
+
+- User requested a sample LinkedIn post as a PDF with project findings, imagery,
+  and a reusable website image, supplying three photos and two videos. Read the
+  PDF skill, README, AGENTS and recorded hardware acceptance before drafting.
+- Created output/pdf/signum-linkedin-preview.pdf (three pages), editable post
+  output/media/signum-linkedin-draft.txt, and 1600x900 portfolio card in PNG and
+  WebP. Card uses supplied original board/dashboard photography and typeset
+  layout. No invented screenshots or synthetic hardware images.
+- Included index-fund motivation, school VHDL to Verilog learning, configurable
+  rules, Python validation, dashboard, backtesting, optional Alpaca PAPER and
+  Azure/Crossref drafting. Hardware numbers explicitly reference 31 Oct recorded
+  run: 65 matching quote responses, 4.2875 ms mean host RTT including USB/UART.
+  No isolated physical FPGA timing or profitability claimed, no new hardware test.
+- Inspected both videos via extracted frames. Durations 11.53s and 11.96s,
+  1920x1080. Included a board close-up frame in PDF. LED state meaning cannot be
+  established from supplied stills, so captions avoid claims about LED signals.
+- Browser screenshot attempt returned local-browser-access unavailable. Web tool
+  could not retrieve ayansheikh.dev or public Signum demo. Used provided earlier
+  dashboard photo with explicit caption instead of claiming a fresh screenshot.
+  Portfolio asset is standalone, not integrated into website or style-matched.
+- Used bundled reportlab/Pillow/pypdf and Poppler. Project venv lacked reportlab,
+  so used bundled Python rather than adding PDF app dependencies. Installed only
+  imageio-ffmpeg/Pillow into ignored venv to inspect video inputs. Authoring marker
+  ran once. Rendered all PDF pages and card to PNG and visually reviewed them.
+  Validated three pages, readable extracted text, portfolio dimensions and WebP
+  output. Post is 1,753 characters. Assets remain local for user review; no post,
+  website publication, credential access, FPGA commands or broker orders.
+- Reminder retained: record a fresh visualization/demo video before final release.
+  Original attachments and intermediate files remain outside Git staging.
+
+### 2026-11-13 — Add original project visuals for README
+
+- User requested a polished README with screenshots/images and a clear overview.
+  Read existing README, project instructions and prior task/hardware records.
+- Added docs/assets/signum-overview.png from the previously reviewed portfolio
+  layout, original fpga-dashboard.jpg and a four-second 640x360 animated board
+  excerpt from supplied footage. Explicit captions identify earlier dashboard,
+  generated inputs and the limited interpretation of visible LED states.
+- Fresh CUA inventory confirmed no browser access in this chat. No browser
+  screenshot could be taken; used original supplied dashboard photography.
+- Verified image decoding and dimensions, 32 GIF frames and ~2.6 MB GIF size.
+  Rechecked hero visually. Original videos, temporary files and PDF exports are
+  excluded from staging. No new dependencies or application changes.
