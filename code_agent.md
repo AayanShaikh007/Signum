@@ -1158,3 +1158,23 @@ from this session.
 - First diagnostic source-print failed on Windows cp1252 for a Greek character;
   reran with ASCII-escaped JSON. No secrets logged. New tests cover unrelated
   metadata filtering, deduplication, escaped titles and missing-source results.
+
+### 2026-11-17 — Explain unsupported AI execution and verify supported workflow
+
+- Hide placeholder numeric settings for unsupported drafts. Show explicit reasons
+  for disabled Apply/backtest controls with accessible descriptions; retain export.
+  Removed misleading Python suggestion for unsupported hypotheses. Display search
+  query and empty-source state. Supported saved rules show their actual template
+  in library entries so a name such as Opening-range breakout cannot imply logic.
+- Added capability explanation beside editor: names/hypotheses/imported JSON do
+  not create algorithms. Updated research guide for focused retrieval/two calls,
+  limits and unsupported states; local onboarding bumped to local-workspace-v10.
+- Extracted the actual result presentation for rendered-markup regression tests:
+  unsupported placeholders hidden/actions disabled, supported settings enabled,
+  stale hypothesis and active-operation locks. Full pytest 92 passed/11 optional
+  RTL tests skipped; frontend 24 passed, local and public production builds passed.
+  Existing Starlette/httpx deprecation warning remains. git diff check passed.
+- Restarted backend only after confirming idle/no owner, to activate new assistant
+  code. Browser visual QA unavailable; validated result markup and live API instead.
+  Existing saved user strategies/drafts preserved. No FPGA commands or broker
+  orders sent, and opening-range execution was not added in this troubleshooting.

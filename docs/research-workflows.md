@@ -127,15 +127,14 @@ No new dependencies are required. Use the normal backend/frontend startup comman
 above. Azure calls run server-side only. The public Vercel demo does not include
 this feature or access these credentials. Keep the backend bound to localhost.
 
-The hypothesis goes to Crossref search and Azure. Crossref provides bibliographic
+Azure converts the hypothesis into a short finance search query. Crossref is queried across bibliographic records, including working papers and books. The backend keeps up to four unique candidates with finance vocabulary and matching topic terms, and shows the query in the result. This heuristic can miss relevant research or retain weak matches, so review each source. If none pass, the result explicitly reports missing evidence. The hypothesis goes to Crossref search and Azure. Crossref provides bibliographic
 metadata and sometimes abstract excerpts; this is **not full-paper review, live
 web browsing, or market-data analysis**. The UI shows what was retrieved and
 permits only citations to those records. Relevance, interpretations and proposed
 parameters still need human review. Parameters are untested guesses, not proven
-by citations. Only anchor and SMA reversion templates are supported; ideas needing
-other rules are flagged rather than deployed. Research records save under ignored
+by citations. Only anchor and SMA reversion templates are supported. An opening-range breakout needs session tracking, opening-range levels and exit logic in both execution and backtesting. Unsupported drafts explain the disabled Apply/backtest controls and hide placeholder settings. A name, hypothesis or imported JSON does not implement additional algorithms. Research records save under ignored
 `backend/data/research/ai_drafts/`. A process-local limit allows ten requests/hour,
-one at a time, with bounded input/output and no automatic retry. Restarting the
+one at a time, with bounded input/output and no automatic retry. Each draft uses two Azure calls, one for search planning and one for settings/evidence review. Restarting the
 backend resets the limit; it is not a cloud spending cap or public API protection.
 
 Develop on the first 70%, freeze the rule, evaluate the later 30% separately, then
