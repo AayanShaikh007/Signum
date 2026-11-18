@@ -1128,3 +1128,33 @@ from this session.
 - TypeScript/Vite local production build passed; whitespace check passed.
   Visual browser inspection unavailable. No workflow/guide version change needed
   for alignment/copy correction. No hardware commands or backend changes.
+
+### 2026-11-17 — Investigate blocked opening-range AI draft and improve retrieval
+
+- User supplied screenshots of an opening-range hypothesis with irrelevant papers
+  and disabled Apply. Inspected saved research ID b202e7106ad04ca5b7625b83b410d91c.
+  It explicitly has supported=false: opening-range momentum, session timing and
+  timed exits are absent from both implemented anchor/SMA engines. Apply gating
+  was correct, but displayed placeholder settings and Python fallback copy misled.
+- Reproduced bad retrieval: entire hypothesis searched broadly in Crossref with
+  four journal-only results, matching minutes/upward instead of finance concepts.
+  Consulted official Crossref API docs. Added bounded Azure search-planning call,
+  bibliographic keyword query over 20 records including working papers/books,
+  DOI deduplication and finance/topic vocabulary screening before retaining four.
+  Persists actual query/terms/status. No passing matches is reported honestly and
+  still allows compatibility assessment; evidence cannot cite nonexistent IDs.
+- Cleaned escaped HTML/whitespace in source titles. Search screening is a heuristic
+  for candidate relevance, not scientific quality/empirical proof. Each draft now
+  uses two bounded Azure calls; existing 10-draft/hour process limit retained.
+- Live local API test for user's exact opening-range idea returned HTTP 200,
+  supported=false and four topical trading records (ID
+  90822c45dcf04fe9bd64627f0040f4f0), replacing unrelated council/obituary matches.
+- Live SMA request returned supported settings. Initial two-phrase screening was
+  overly strict and returned no records; adjusted to two distinct matched topic
+  words, then reran successfully with four finance/reversion records and supported
+  SMA16/threshold5/max3/limit8 (ID 2ea908c9aa2349b4b4ac9ed325ac6981).
+  Tested that actual AI spec through save/freeze/backtest in temporary storage;
+  short DEMO fixture produced zero fills due to SMA warmup, as expected.
+- First diagnostic source-print failed on Windows cp1252 for a Greek character;
+  reran with ASCII-escaped JSON. No secrets logged. New tests cover unrelated
+  metadata filtering, deduplication, escaped titles and missing-source results.

@@ -6,7 +6,7 @@ import httpx
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from backend.assistant import DraftRequest, Proposal, assistant_router, generate
+from backend.assistant import DraftRequest, Proposal, assistant_router, generate, retrieve, SearchPlan
 from backend.strategies import Strategy, StrategyStore
 
 def sync_test(function):
@@ -23,17 +23,24 @@ def proposal(**changes):
     result.update(changes)
     return result
 
+def completion_reply(request, value):
+    body=json.loads(request.content)
+    if body['response_format']['json_schema']['name']=='SearchPlan':
+        value={'query':'stock market mean reversion trading','topic_terms':['mean','reversion']}
+    return httpx.Response(200,json={'choices':[{'finish_reason':'stop','message':{'content':json.dumps(value)}}]})
+
+
 def handler(request):
     if request.method=='GET':
-        return httpx.Response(200,json={'message':{'items':[{'DOI':'10.1234/test','title':['A paper'],'abstract':'<p>Test abstract</p>'}]}})
-    return httpx.Response(200,json={'choices':[{'finish_reason':'stop','message':{'content':json.dumps(proposal())}}]})
+        return httpx.Response(200,json={'message':{'items':[{'DOI':'10.1234/test','title':['Stock mean reversion trading'],'abstract':'<p>Test abstract</p>'}]}})
+    return completion_reply(request,proposal())
 
 @sync_test
 async def test_draft_mapping_sources_and_hypothesis():
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
         result=await generate(DraftRequest(hypothesis='Prices might revert after small falls'),client,CONFIG)
     assert result['sources'][0]['url']=='https://doi.org/10.1234/test'
-    assert result['sources'][0]['abstract']==' Test abstract '
+    assert result['sources'][0]['abstract']=='Test abstract'
     assert result['proposal']['spec']['hypothesis']=='Prices might revert after small falls'
     assert result['fpga_supported']
     assert 'test-secret' not in json.dumps(result)
@@ -43,7 +50,7 @@ async def test_unknown_citation_rejected():
     def bad(request):
         if request.method=='GET':return handler(request)
         value=proposal(evidence=[{'source_id':'invented','finding':'Claim','limitation':'Unknown'}])
-        return httpx.Response(200,json={'choices':[{'finish_reason':'stop','message':{'content':json.dumps(value)}}]})
+        return completion_reply(request,value)
     async with httpx.AsyncClient(transport=httpx.MockTransport(bad)) as client:
         with pytest.raises(ValueError):await generate(DraftRequest(hypothesis='A valid hypothesis about falling prices'),client,CONFIG)
 
@@ -83,7 +90,7 @@ def test_unconfigured_and_sanitized_errors(tmp_path):
 async def test_unsupported_not_hardware_eligible_and_truncation_rejected():
     def unsupported(request):
         if request.method=='GET':return handler(request)
-        return httpx.Response(200,json={'choices':[{'finish_reason':'stop','message':{'content':json.dumps(proposal(supported=False))}}]})
+        return completion_reply(request,proposal(supported=False))
     async with httpx.AsyncClient(transport=httpx.MockTransport(unsupported)) as client:
         value=await generate(DraftRequest(hypothesis='Use a new unsupported momentum strategy'),client,CONFIG)
         assert not value['fpga_supported'] and not value['proposal']['supported']
@@ -105,3 +112,32 @@ def test_drafted_spec_uses_existing_freeze_and_backtest(tmp_path):
         frozen=client.post(f"/api/research/strategies/{saved['id']}/freeze",json={'expected_revision':saved['revision']}).json()
         result=client.post('/api/research/backtests',json={'snapshot_id':frozen['id'],'dataset_id':'demo','phase':'development','fee_bps':1,'slippage_bps':2})
         assert result.status_code==200 and 'final_equity' in result.json()['summary']
+
+@sync_test
+async def test_retrieval_filters_unrelated_records_and_keeps_working_papers():
+    seen=[]
+    def search(request):
+        seen.append(request)
+        return httpx.Response(200,json={'message':{'items':[
+            {'DOI':'10.1000/minutes','title':['APSA Council Minutes May 7, 1982']},
+            {'DOI':'10.1000/obituary','title':['OBITUARY. ALFRED UPWARD']},
+            {'DOI':'10.1000/generic','title':['Stock market opening hours']},
+            {'DOI':'10.1000/orb','title':['Opening range breakout stock trading &lt;br&gt;'], 'container-title':None},
+            {'DOI':'10.1000/orb','title':['Opening range breakout stock trading']}]}})
+    async with httpx.AsyncClient(transport=httpx.MockTransport(search)) as client:
+        sources=await retrieve(client,SearchPlan(query='opening range breakout stock trading',topic_terms=['opening range','breakout']))
+    assert [s['doi'] for s in sources]==['10.1000/orb']
+    assert sources[0]['title']=='Opening range breakout stock trading'
+    assert seen[0].url.params['query.bibliographic']=='opening range breakout stock trading'
+    assert 'filter' not in seen[0].url.params
+
+@sync_test
+async def test_no_relevant_sources_remains_honest_and_still_checks_support():
+    def empty(request):
+        if request.method=='GET':return httpx.Response(200,json={'message':{'items':[]}})
+        return completion_reply(request,proposal(supported=False,evidence=[]))
+    async with httpx.AsyncClient(transport=httpx.MockTransport(empty)) as client:
+        result=await generate(DraftRequest(hypothesis='An opening-range breakout with a timed exit'),client,CONFIG)
+    assert result['sources']==[] and result['proposal']['evidence']==[]
+    assert result['research']['status']=='no_relevant_sources'
+    assert not result['proposal']['supported']
