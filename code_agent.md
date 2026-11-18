@@ -1094,3 +1094,27 @@ from this session.
   layout reviewed against supplied screenshots and CSS/JSX, not rendered browser.
 - Screenshot contains existing configuration CRC error/reset-required state.
   This task changes placement only; no hardware test or error-resolution claim.
+
+### 2026-11-17 — Diagnose COM6 CRC failure and reload working firmware
+
+- User confirmed S1/S2 pressed and authorized fixing physical connection. Backend
+  was error/owner None; COM6 identified as FTDI 0403:6010. COM28 is a different
+  USB device. Single configuration-only diagnostic captured ASCII IO State text
+  instead of NR/v2 reply; CRC failure was caused by non-Signum output on COM6.
+  No quote or retry was sent on that failed session.
+- Gowin CLI scanned GW1NR-9C ID 0x1100481B. Existing open-source build/signum.fs
+  failed vendor SRAM Program/Verify and SRAM Program, both at completion.
+  openFPGALoader in OSS CAD Suite could not open USB through current Windows
+  driver. Did not change drivers. Found existing vendor-produced
+  impl/pnr/signum.fs dated Oct 31; Gowin SRAM Program succeeded, status 0x0003F020.
+- Actual FastAPI WebSocket test using COM6, generated inputs/local portfolio and
+  original anchor settings: configuration acknowledged, 24/24 physical quote
+  responses matched Python (6 BUY, 10 SELL, 8 HOLD), mean measured host RTT
+  4.275 ms including USB/UART/host. No isolated engine latency measurement.
+  Stopped cleanly, owner released. Raw evidence saved ignored
+  backend/data/hardware-reconnect-2026-11-17.json. No Alpaca orders or account calls.
+- Reloaded vendor SRAM image successfully after test to return board to startup
+  state. Restarted idle backend to clear old run/reset/error indicators. Verified
+  backend idle/owner None/reset_required False, frontend HTTP 200.
+- SRAM load is volatile; disconnecting power requires reloading. Persistent flash
+  was not modified. No RTL/constraints/source edits, no rebuilt firmware.
