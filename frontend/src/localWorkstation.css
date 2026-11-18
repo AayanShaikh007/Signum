@@ -141,3 +141,10 @@
 }
 .local-workstation .runtime-notices > .notice { flex-wrap: nowrap; }
 .local-workstation .runtime-notices > .notice > span { flex: 1; }
+
+.local-workstation .strategy-workspace .strategy-hardware-note {
+  max-width: 780px;
+  margin: 10px 0 0;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}

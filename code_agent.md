@@ -1118,3 +1118,13 @@ from this session.
   backend idle/owner None/reset_required False, frontend HTTP 200.
 - SRAM load is volatile; disconnecting power requires reloading. Persistent flash
   was not modified. No RTL/constraints/source edits, no rebuilt firmware.
+
+### 2026-11-17 — Align strategy workspace hardware description
+
+- User screenshot showed the hardware description flush against the card edge.
+  Moved that paragraph into the padded heading beside the title/subtitle and
+  constrained readable width with wrapping. Corrected flash-once wording to load
+  configurable firmware before runs, matching volatile SRAM behavior.
+- TypeScript/Vite local production build passed; whitespace check passed.
+  Visual browser inspection unavailable. No workflow/guide version change needed
+  for alignment/copy correction. No hardware commands or backend changes.
