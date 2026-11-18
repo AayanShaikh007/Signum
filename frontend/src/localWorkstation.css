@@ -76,3 +76,68 @@
 .ai-source summary { cursor: pointer; color: #b4c9e8; }
 .ai-settings { display: grid; grid-template-columns: minmax(100px,1fr) minmax(0,2fr); gap: 8px; font-size: 14px; }
 .ai-settings dd { margin: 0; }
+
+/* Keep configuration compact and run actions beside their live feedback. */
+.local-workstation .run-setup { margin-bottom: 18px; overflow: hidden; }
+.local-workstation .run-setup > summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  cursor: pointer;
+  list-style: none;
+}
+.local-workstation .run-setup > summary::-webkit-details-marker { display: none; }
+.local-workstation .run-setup > summary:focus-visible { outline: 2px solid #9bc9ee; outline-offset: -4px; }
+.local-workstation .setup-title { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+.local-workstation .run-setup[open] .setup-title svg { transform: rotate(90deg); }
+.local-workstation .setup-summary { color: #aec5db; font-size: 12px; overflow-wrap: anywhere; }
+.local-workstation .setup-hint { margin-left: auto; color: #8da1ba; font-size: 11px; }
+.local-workstation .run-setup[open] .setup-hint { visibility: hidden; }
+.local-workstation .run-setup-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); border-top: 1px solid #273243; }
+.local-workstation .run-setup-grid > .source-panel { min-width: 0; margin: 0; border: 0; border-radius: 0; background: transparent; padding: 18px 20px; }
+.local-workstation .run-setup-grid > .source-panel + .source-panel { border-left: 1px solid #273243; }
+.local-workstation .run-setup .source-heading { margin-bottom: 12px; flex-wrap: wrap; }
+.local-workstation .run-setup .source-fields > label { min-width: 0; max-width: 100%; }
+.local-workstation .run-setup select { max-width: 100%; }
+.local-workstation .run-setup .reset-check { margin-left: 0; }
+.local-workstation .run-setup > .notice { border: 0; border-top: 1px solid #273243; border-radius: 0; margin: 0; padding: 12px 20px; }
+.local-workstation .control-bar { flex-wrap: wrap; margin-bottom: 14px; }
+@media (max-width: 900px) {
+  .local-workstation .run-setup-grid { grid-template-columns: minmax(0, 1fr); }
+  .local-workstation .run-setup-grid > .source-panel + .source-panel { border-left: 0; border-top: 1px solid #273243; }
+  .local-workstation .setup-hint { display: none; }
+  .local-workstation .control-bar .run-controls { flex-wrap: wrap; gap: 14px; }
+}
+@media (max-width: 600px) {
+  .local-workstation .run-setup > summary { flex-wrap: wrap; gap: 6px 14px; padding: 14px 16px; }
+  .local-workstation .setup-summary { width: 100%; }
+  .local-workstation .control-bar .data-source, .local-workstation .control-separator { display: none; }
+  .local-workstation .control-bar .run-controls { width: 100%; justify-content: space-between; margin-left: 0; }
+}
+.local-workstation .setup-strategy { color: #8da1ba; font-size: 11px; overflow-wrap: anywhere; }
+@media (max-width: 900px) {
+  .local-workstation .run-setup > summary { flex-wrap: wrap; }
+}
+.local-workstation .hardware-setup {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(0, 2fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.local-workstation .hardware-setup > .notice,
+.local-workstation .hardware-setup > .hardware-controls { margin: 0; min-width: 0; }
+.local-workstation .hardware-setup .hardware-controls { flex-wrap: wrap; gap: 10px 16px; }
+.local-workstation .hardware-setup .reset-check { margin-left: 0; flex: 1 1 240px; }
+.local-workstation .runtime-notices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
+.local-workstation .runtime-notices > .notice { margin: 0; align-items: flex-start; min-width: 0; }
+.local-workstation .runtime-notices > .notice:only-child { grid-column: 1 / -1; }
+.local-workstation .runtime-notices > .notice > svg { flex-shrink: 0; margin-top: 3px; }
+@media (max-width: 1000px) {
+  .local-workstation .hardware-setup { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  .local-workstation .runtime-notices { grid-template-columns: minmax(0, 1fr); }
+}
+.local-workstation .runtime-notices > .notice { flex-wrap: nowrap; }
+.local-workstation .runtime-notices > .notice > span { flex: 1; }

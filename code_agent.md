@@ -1065,3 +1065,32 @@ from this session.
 - Validated local Markdown links, heading targets, image files, code-fence balance
   and git diff whitespace. Documentation-only task; app tests/hardware runs not
   repeated. GitHub rendered-page inspection unavailable with browser access off.
+
+### 2026-11-17 — Launch local app for demo preparation
+
+- User requested running the local app. Neither service was listening; started
+  FastAPI on 127.0.0.1:8000 and personal Vite frontend on 127.0.0.1:5173.
+- Verified both HTTP 200 and backend idle. App is ready for user demo recording.
+  No hardware run, serial commands or paper orders started. No source changes.
+
+### 2026-11-17 — Condense local run setup and place actions beside live stats
+
+- User requested combining the portfolio/data sections and moving Start closer
+  to runtime statistics. Interpreted the first request as a compact collapsible
+  Run setup card. Summary retains portfolio, source and selected strategy;
+  expanded contents place portfolio/data settings side by side on desktop.
+- Moved existing engine/speed/start-stop bar directly above the metric cards and
+  chart, preserving handlers and all disabled-state/reset/consent gates.
+- Follow-up screenshot requested using horizontal space. Grouped hardware status
+  and UART/reset controls in a desktop grid and paired error/reset notices in
+  columns. Responsive breakpoints stack sections on narrower screens; removed
+  large auto-margin between serial controls and reset confirmation.
+- Updated local introduction to explain Run setup and the new action location,
+  bumped GUIDE_VERSION to local-workspace-v9. Guide dismiss/reopen behavior retained.
+- Frontend 21 tests passed, local and demo builds passed; final local build also
+  passed after hardware-grid changes. git diff whitespace check passed. One build
+  was invoked from root lacking package.json, then rerun successfully in frontend.
+  Browser visual inspection unavailable under current browser access restriction;
+  layout reviewed against supplied screenshots and CSS/JSX, not rendered browser.
+- Screenshot contains existing configuration CRC error/reset-required state.
+  This task changes placement only; no hardware test or error-resolution claim.
