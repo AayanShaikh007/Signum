@@ -1218,3 +1218,12 @@ from this session.
   public builds passed. Whitespace check passed. Actual browser layout/click path
   remains unverified because page permission was denied. No GIF was recorded in
   this task; supplied the tested API/hardware workflow and recording instructions.
+
+### 2026-11-18 — Publish demo recording instructions
+
+- Linked the recording checklist from README and updated research workflow with
+  one-action preparation. Instructions include the verified supported hypothesis,
+  expected warmup/decision behavior, port/reset selection and edit captions.
+- Final services checked: frontend HTTP 200, backend stopped/owner None with
+  normal reset_required True after physical test. User must press S2 for next take.
+  Browser page permission request remains pending for visual QA.

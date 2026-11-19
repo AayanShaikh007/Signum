@@ -107,8 +107,10 @@ or start physical hardware.
 
 In **Strategies**, write a hypothesis (15–2,000 characters) and wait for the
 editor to save. Select **Research & draft settings**, review the source records,
-limitations and proposed values, then **Apply to editor** or **Save candidate &
-backtest**. The latter creates a new strategy file, freezes it and runs the selected
+limitations and proposed values, then **Apply & prepare run**, **Apply to editor**, or **Save candidate &
+backtest**. Apply & prepare run fills the editor, saves a separate file, freezes
+it, selects it for the next run and returns you to setup/run controls. Choose
+your engine and explicitly start after confirming any required hardware reset. The latter creates a new strategy file, freezes it and runs the selected
 dataset/phase with the selected fees and slippage. It never starts paper orders
 or FPGA communication. **Undo AI settings** restores the previous editor values;
 existing saved files and experiments remain available. Export research JSON to

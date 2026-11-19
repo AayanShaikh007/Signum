@@ -300,6 +300,7 @@ Dashboard settings and paper execution determine the run's actual behavior.
 | [`tests/`](tests/) | Reference, risk, protocol and RTL simulation checks |
 | [`tools/`](tools/) | Toolchain activation, firmware build and dataset preparation |
 
+For a short video, follow the [demo recording checklist](docs/demo-recording.md).
 Start with the [hands-on lab](docs/hands-on-lab.md), then explore
 [dashboard architecture](docs/dashboard.md), [research workflows](docs/research-workflows.md)
 and the [historical validation log](docs/validation.md).
