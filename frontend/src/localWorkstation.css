@@ -148,3 +148,8 @@
   line-height: 1.8;
   overflow-wrap: anywhere;
 }
+
+.local-workstation #runtime { scroll-margin-top: 20px; }
+.local-workstation .ai-research-details { margin: 16px 0; border-top: 1px solid #33445f; padding-top: 14px; }
+.local-workstation .ai-research-details > summary { cursor: pointer; color: #b4c9e8; font-size: 14px; line-height: 1.7; }
+.local-workstation .ai-research-details > summary:focus-visible { outline: 2px solid #9bc9ee; outline-offset: 4px; }

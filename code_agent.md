@@ -1178,3 +1178,43 @@ from this session.
   code. Browser visual QA unavailable; validated result markup and live API instead.
   Existing saved user strategies/drafts preserved. No FPGA commands or broker
   orders sent, and opening-range execution was not added in this troubleshooting.
+
+### 2026-11-18 — Verify AI-to-FPGA demo and streamline preparation
+
+- User authorized computer control, a physical run after reset, AI verification,
+  UX fixes and a step-by-step GIF/demo guide. Read computer-use skill and work log.
+  Inventory now exposed the actual Edge Signum tab, but acquiring localhost page
+  content was explicitly denied by saved browser policy. Did not use alternate
+  browser/native/CDP workarounds. Asked user to enable the page permission while
+  continuing independent API/hardware checks. Rendered UI/clicking remains blocked.
+- Services initially absent (HTTP connection refused). Started FastAPI localhost
+  8000 and personal Vite 5173. Existing saved drafts/files retained. Sent a fresh
+  supported SMA16 hypothesis through actual Azure assistant API, then existing
+  strategy-save and freeze endpoints. Four sources and supported/FPGA-compatible
+  settings returned: threshold5, window16, max3, position cap8.
+- Saved clearly named Demo acceptance - AI SMA16 and frozen snapshot
+  f67b0120153e47168618323728a56bf8. Actual backend WebSocket COM6 run configured
+  successfully, consumed 60 generated quotes and stopped with ownership released.
+  All 60 physical responses matched Python: 14 BUY, 14 SELL, 32 HOLD. Initial 16
+  were warmup HOLD. Configuration plus quotes gave 61 validated replies, zero
+  recorded CRC/header/timeout/sequence/reference/transport errors. Mean host RTT
+  4.2406 ms including USB/UART/host; max observed order3, absolute position6.
+  No isolated engine measurement or new strategy profitability claim.
+- Full raw evidence retained ignored backend/data/demo-acceptance-2026-11-18.json.
+  No Alpaca account/order calls or firmware changes. Board now requires S2 reset
+  before another run, per normal stop lifecycle.
+- Added Apply & prepare run to fill editor, save separate file, freeze and select
+  candidate in one action, then scroll back to full runtime setup including COM
+  and reset controls. Start remains explicit. Reused existing APIs and guarded
+  candidate workflow; state reflects saved file even if freezing subsequently fails.
+- Moved action buttons above collapsible research/evidence so long source cards
+  do not bury the next step. Retained editor-only apply, undo, backtest and export.
+  Expanded rendered-markup tests for action availability and ordering. Local guide
+  bumped to v11 and research workflow explains new preparation action.
+- Added docs/demo-recording.md with exact hypothesis, prep checklist, 45-60 second
+  action sequence, captions and measured result/visual-verification limits.
+- Verification after changes: 92 Python tests passed, 11 optional RTL checks
+  skipped without activated simulator PATH; 24 frontend tests passed; local and
+  public builds passed. Whitespace check passed. Actual browser layout/click path
+  remains unverified because page permission was denied. No GIF was recorded in
+  this task; supplied the tested API/hardware workflow and recording instructions.

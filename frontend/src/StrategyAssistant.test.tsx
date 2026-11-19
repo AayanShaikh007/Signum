@@ -11,25 +11,27 @@ function fixture(supported:boolean):Draft {
 }
 function render(draft:Draft,current=hypothesis,disabled=false) {
   return renderToStaticMarkup(<StrategyDraftReview draft={draft} hypothesis={current} disabled={disabled}
-    onApply={()=>{}} onTest={async()=>{}} onExport={()=>{}}/>)
+    onApply={()=>{}} onTest={async()=>{}} onPrepare={async()=>{}} onExport={()=>{}}/>)
 }
 describe('AI draft review',()=>{
-  it('explains unsupported execution, hides placeholders and disables both actions',()=>{
+  it('explains unsupported execution, hides placeholders and disables all execution actions',()=>{
     const html=render(fixture(false))
     expect(html).toContain('current Python and FPGA engines do not implement')
     expect(html).not.toContain('ai-settings')
     expect(html).not.toContain('Placeholder values')
     expect(html).not.toContain('may require Python')
-    expect(html.match(/disabled=""/g)).toHaveLength(2)
+    expect(html.match(/disabled=""/g)).toHaveLength(3)
     expect(html).toContain('aria-describedby=')
   })
   it('shows supported settings and enables apply after saving',()=>{
     const html=render(fixture(true))
     expect(html).toContain('ai-settings')
     expect(html).not.toContain('disabled=""')
+    expect(html).toContain('Apply &amp; prepare run')
+    expect(html.indexOf('Apply &amp; prepare run')).toBeLessThan(html.indexOf('Research sources'))
   })
   it('blocks stale hypotheses and active operations',()=>{
     expect(render(fixture(true),'Changed idea')).toContain('Hypothesis changed')
-    expect(render(fixture(true),hypothesis,true).match(/disabled=""/g)).toHaveLength(2)
+    expect(render(fixture(true),hypothesis,true).match(/disabled=""/g)).toHaveLength(3)
   })
 })
